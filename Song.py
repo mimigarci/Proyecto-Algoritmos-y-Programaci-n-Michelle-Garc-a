@@ -4,7 +4,6 @@
 class Song:
 
     def __init__(self, id: str, name: str, duration: str, link: str, artistId):
-
         """Constructor de la clase Song:
 
         Args:
@@ -12,7 +11,7 @@ class Song:
             name (str): Nombre de la canción
             duration (str): Duración de la canción
             link (str): Link de la canción
-            artistId (_type_): Lista de usuarios que le dieron me gusta a la canción.
+            artistId (_type_): Id del músico que publicó la canción.
         """        
 
         self.id = id
@@ -31,10 +30,14 @@ class Song:
             str: Atributos de la clase función
         """        
         return f"""
-
 Nombre: {self.id}
 Duración: {self.id}
 """
+    
+    def song_menu (self, song, active_user):
+        song.read
+        reproduce = input ("Desea reproducir esta canción")
+
 
 #TODO: Terminar reproductor de canciones
     def play_song(self):

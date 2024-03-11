@@ -7,14 +7,13 @@ from Program import Program
 import os
 os.system('cls')
 
+#print (os.getcwd())
 
 """----------------------------------- Función principal de Metrotify ----------------------------------"""
 
 def main():
 
     Metrotify = Program()
-    Metrotify.download()
-    Metrotify.open_database()
-    Metrotify.menu()
+    Metrotify.start_program()
 
 main ()
