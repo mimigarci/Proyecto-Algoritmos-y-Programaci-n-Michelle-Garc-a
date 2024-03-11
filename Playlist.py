@@ -3,7 +3,7 @@ from User import User
 
 
 """ Clase Playlist: Playlists de Metrotify. """
-
+ 
 class Playlist:
 
     def __init__(self, id: str, name: str, description: str, creator: str, tracks: list):

@@ -6,7 +6,7 @@ from Playlist import Playlist
 from Song import Song 
 from Functions import Functions
 import json
-
+ 
 
 """Clase Programa: Es la encargada de abrir y gestionar todas las operaciones que se tienen que llevar a cabo para gestionar Metrotify"""
 
@@ -36,6 +36,7 @@ class Program(Functions):
      
 
     def open_database (self):
+        
         
         """ ------------------------ Función para leer toda la información dentro de las bases de datos -------------------------
 
@@ -148,85 +149,27 @@ class Program(Functions):
                 self.playlists.append(newPlaylist)
 
 
-    def manage_profile (self):
-        """ ------------------------ Menu definido para gestionar un perfil de un usuario  ------------------------- """ 
-        option = input ("""
-¿Cómo desea acceder al programa?
-                            
-1. Registrar perfil nuevo
-2. Buscar un perfil
-3. Cambiar la información personal de una cuenta
-4. Borrar los datos de una cuenta
-5. Regresar
-                                                    
----> """)
-        
-        if option == "1":
-            Program.register_profile(self)
-      
-        elif option == "2":
-            search = input("Introduzca el nombre del usuario (username): ")
-
-            if Program.existent_user(self, search) == True:
-                for i in self.users:
-                    if i.username == search:
-                        print (i.name)
-                        i.read_attribute
-                    else:
-                        continue
-            else:
-                print ("")
-
-        elif option == "3":
-            modify_user = ("Nombre de usuario de la cuenta que desea modificar: ")
-
-            if Program.existent_user(self, modify_user) == True:
-                for i in self.users:
-                    if i.username == search:
-                        i.read
-                        Program.modify_user(self, modify_user)
-                    else:
-                        continue
-            else:
-                print ("")
-
-        elif option == "4":
-            eraseAccountData = input("Introduzca el ID de la cuenta a la que desea resetear")
-            if Program.existent_user(self, eraseAccountData) == True:
-                for i in self.users:
-                    if i.username == search:
-                        i.read
-                        Program.delete_AccountData(self, eraseAccountData)
-                    else:
-                        continue
-            else:
-                print ("ID no registrado. No es posible acceder a la información")
-
-        elif option == "5":
-            Program.menu()
-        else:
-            print ("Opción inválida")
-
         
 
     def manage_music(self):
-        option = input ("""
-¿Cómo desea acceder al programa?
-                            
-1. Escucha
-2. Musico
-3. Regresar
-                                                       
----> """)
-        
-        if option =="1":
-            Functions.listener_menu()
-        elif option =="2":
-            Functions.artist_menu()
-        elif option =="3":
-            Program.menu()
-        else:
-            print ("Opción inválida")
+        while True:
+            option = input ("""
+    ¿Cómo desea acceder al programa?
+                                
+    1. Escucha
+    2. Musico
+    3. Regresar
+                                                        
+    ---> """)
+            
+            if option =="1":
+                Program.listener_menu(self)
+            elif option =="2":
+                Program.artist_menu(self)
+            elif option =="3":
+                Program.menu(self)
+            else:
+                print ("Opción inválida")
 
 
 
@@ -273,26 +216,29 @@ class Program(Functions):
 
 
     def menu(self):
+        print ("\nInicializando programa...")
         while True:
-            print ("Bienvenido a Metrotify!")
+            print ("""
+                   Bienvenido a Metrotify!""")
 
             choice = input("""
 Seleccione una acción a realizar:                
 
-1. Gestionar Perfil                                             
-2. Gestionar Musica                                                                                   
+1. Iniciar sesión                                                                                                                              
+2. Registrar un nuevo usuario                                                                                                                              
 3. Ver Indicadores                                              
 4. Salir                                           
 
 ---> """)
             
             if choice == "1":
-                Program.manage_profile(self)
-            elif choice == "2":
                 Program.manage_music(self)
+            if choice == "2":
+                Program.register_profile(self)
             elif choice == "3":
                 Program.indicators(self)
             elif choice == "4":
+                print ("\nCerrando programa...")
                 break
             else:
                 print ("Opción inválida")

@@ -1,5 +1,5 @@
 class Like:
-
+ 
     def __init__(self, item, user):
         
         self.item = item

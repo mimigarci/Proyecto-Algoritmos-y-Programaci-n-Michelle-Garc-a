@@ -7,7 +7,7 @@ from Song import Song
 from Like import Like
 import uuid
 import requests
-
+ 
 class Functions:
 
     """------------------------ Función para descargar la información de Metrotify ------------------------"""
@@ -62,10 +62,11 @@ class Functions:
     
     """------------------------ Función para verificar si un id se encuentra disponible ------------------------"""
 
-    def id_avaiability (self, id, users_list):
-            for i in users_list:
+    def id_avaiability (self, id):
+            for i in self.users:
                 if id == i.id:
                     avaiable = False
+                    break
                 else:
                     avaiable = True
             return avaiable
@@ -114,7 +115,7 @@ class Functions:
                     continue
 
         else:
-            msg = "El nombre de usuario introducido no se encuentra registrado. Intente nuevamente con otro nombre."
+            msg = False
         
         return msg
     
@@ -128,20 +129,25 @@ class Functions:
         user_name = input("Introduzca su nombre: ")  
         user_email = input("Introduzca el email del usuario: ") 
         user_username = input("Introduzca un nombre de usuario: ") 
-        user_type = input("Introduzca un tipo de cuenta: ")
         user_id = uuid.uuid4()
 
-        if Functions.generate_id(user_id) == True:
-            if Functions.email_avaiability(user_email) == True:
-                if Functions.username_avaiability(user_name) == True:
-                    if user_type == "musico":
+        if Functions.id_avaiability(self, user_id) == True:
+            if Functions.email_avaiability(self, user_email) == True:
+                if Functions.username_avaiability(self, user_name) == True:
+                    user_type = input (""" 
+Tipo de cuenta:
+1. Musico
+2. Escucha
+                                       
+---> """)
+                    if user_type == "1":
                         newArtist = Artist(user_id, user_name, user_email, user_username, user_type)
                         self.users.append(newArtist)
                         self.artists.append(newArtist)
                         print ("\nEl usuario se ha registrado correctamente. Puede acceder a la plataforma.\n")
                     
 
-                    elif user_type == "escucha":
+                    elif user_type == "2":
                         newUser = Listener(user_id, user_name, user_email, user_username, user_type)
                         self.users.append(newUser)
                         self.listeners.append(newUser)
@@ -160,9 +166,16 @@ class Functions:
 
     """------------------------ Función para modificar la información personal de una cuenta ------------------------"""
 
-    def modify_user (self, user):
-        
-        modify_attribute = input("""Atributo de la cuenta a modificar 
+    def modify_user (self, user_id):
+
+        for i in self.users:
+            if i.id == user_id:
+                user = i
+            else:
+                continue
+
+        if Functions.existent_user(self, user) == True:
+            modify_attribute = input("""Atributo de la cuenta a modificar 
                                  
 1. Nombre personal de la cuenta
 2. Email
@@ -170,95 +183,74 @@ class Functions:
                                  
 ---> """)
         
-        if modify_attribute == "1":
-            newName = input ("Nombre nuevo: ")
-            if newName.isalpha:
-                user.name = newName
-                print ("Cambio registrado.")
-            else:
-                print ("El nombre solo puede contener carácteres alfabéticos.")
-
-        elif modify_attribute == "2":
-            newEmail = input ("Email nuevo: ")
-            if Functions.email_avaiability(self, newEmail) == True:
-                if Functions.validate_email == True:
-                    user.email = newEmail
+            if modify_attribute == "1":
+                newName = input ("Nombre nuevo: ")
+                if newName.isalpha:
+                    user_id.name = newName
                     print ("Cambio registrado.")
                 else:
-                    print ("El correo ingresado no es válido.")
+                    print ("El nombre solo puede contener carácteres alfabéticos.")
+
+            elif modify_attribute == "2":
+                newEmail = input ("Email nuevo: ")
+                if Functions.email_avaiability(self, newEmail) == True:
+                    if Functions.validate_email == True:
+                        user_id.email = newEmail
+                        print ("Cambio registrado.")
+                    else:
+                        print ("El correo ingresado no es válido.")
+                else:
+                    print ("El correo ingresado ya se encuentra registrado.")
+
+            elif modify_attribute == "3":
+                newUsername = input ("Nombre nuevo: ")
+                if Functions.username_avaiability(self, newUsername) == True:
+                    user_id.username = newUsername
+                    print ("Cambio registrado.")
+                else:
+                    print ("El nombre de usuario no se encuentra disponible.")
+
+            elif modify_attribute == "4":
+                newType = input ("Tipo de cuenta: ")
+                user_id.type = newType
+
+            #TODO: Revisar funcionalidad
+            elif modify_attribute == "5":
+                newId = Functions.generate_id(self)
+                if Functions.id_avaiability(self, newId) == True:
+                    user_id.id = newId
+                    print ("Un nuevo ID se ha registrado.")
+                else:
+                    print ("Error 2")
+
             else:
-                print ("El correo ingresado ya se encuentra registrado.")
-
-        elif modify_attribute == "3":
-            newUsername = input ("Nombre nuevo: ")
-            if Functions.username_avaiability(self, newUsername) == True:
-                user.username = newUsername
-                print ("Cambio registrado.")
-            else:
-                print ("El nombre de usuario no se encuentra disponible.")
-
-        elif modify_attribute == "4":
-            newType = input ("Tipo de cuenta: ")
-            user.type = newType
-
-        #TODO: Revisar funcionalidad
-        elif modify_attribute == "5":
-            newId = Functions.generate_id(self)
-            if Functions.id_avaiability(self, newId) == True:
-                user.id = newId
-                print ("Un nuevo ID se ha registrado.")
-            else:
-                print ("Error 2")
-
+                print ("Opción inválida. Regresando al menu principal...")
         else:
-            print ("Opción inválida. Regresando al menu principal...")
+            print ("El usuario no se encuentra registrado")
 
 
-    """------------------------ Función para eliminarla información de una cuenta ------------------------"""
+
+    """------------------------ Función para eliminarla la información de una cuenta ------------------------"""
 
     def delete_AccountData (self, account_id):
 
         existent_users = len(self.users)
-        for i in self.listeners:
-            existent_users -= 1
-            if account_id == i.id:
-                i.name = ""
-                i.email = ""
-                i.username = ""
-                i.type = ""
-                i.remove(self.favorite_songs)
-                i.remove(self.favorite_albums)
-                i.remove(self.playlists)
-                i.streams = 0
-                self.listeners.remove(i)
+        if existent_users > 0:
+            for i in self.users:
+                existent_users -= 1
+                if i.id == account_id:
+                    self.users.remove(i)
+                    print ("La cuenta se ha eliminado correctamente.")
+                else:
+                    continue
+        else:
+            print ("No hay usuarios registrados.")
 
-                msg = print("Información eliminada correctamente")
-            else:
-                continue
-
-        for i in self.artists:
-            existent_users -= 1
-            if account_id == i.id:
-                i.name = ""
-                i.email = ""
-                i.username = ""
-                i.type = ""
-                i.remove(self.albums)
-                i.remove(self.top_10)
-                i.remove(self.liked)
-                i.streams = 0
-                self.artists.remove(i)
-
-                msg = print("Información eliminada correctamente")
-
-            else:
-                continue
-
-        return msg
+       
     
-
     """------------------------ Menu de una cuenta de escucha de Metrotify ------------------------"""
 
+#TODO: Revisar funcionalidad
     def listener_menu(self):
         
         active_listener = input ("Nombre de usuario del usuario activo: ")
@@ -272,8 +264,10 @@ class Functions:
 
                     listener_option = input ("""Seleccione una acción
                                     
-    1. Acceder al buscador
-    2. Crear una playlist
+1. Acceder al buscador
+2. Crear una playlist
+3. Cambiar la información personal la cuenta
+4. Eliminar cuenta
                                     
     ---> """)
             
@@ -281,6 +275,10 @@ class Functions:
                         Functions.search_menu(self, listener_id)
                     elif listener_option == "2":
                         Functions.create_playlist(self)
+                    elif listener_option == "3":
+                        Functions.modify_user(self, listener_id)
+                    elif listener_option == "4":
+                        Functions.delete_AccountData(self, listener_id)
                     else:
                         print("Acción no registrada.")
                 else:
@@ -297,12 +295,18 @@ class Functions:
         artist_option = input ("""Seleccione una acción
                                
 1. Lanzar un album
+2. Cambiar la información personal la cuenta
+3. Eliminar cuenta
                                
 ---> """)
         if artist_option == "1":
             Functions.launch_album(self)
+        elif artist_option == "2":
+            Functions.launch_album(self)
+        elif artist_option == "3":
+            Functions.launch_album(self)
         else:
-            print("Acción no registrada.")
+            print("Acción no registrada...Volviendo al Menu principal")
 
 
     def search_menu (self, active_user):
@@ -310,43 +314,53 @@ class Functions:
         itemToSearch = input ("""-------- Buscador --------
                               
 1. Buscar canción
-2. Buscar perfil de músico
-3. Buscar album de un músico                                                       
-4. Buscar playlist                                                       
+2. Buscar perfil                                                    
+3. Buscar playlist                                                                                                              
                             
 ----> """)
         
         if itemToSearch == "1":
-            Functions.searchBySongs(self, active_user)
+            Functions.searchBySongsOrAlbum(self, active_user)
         if itemToSearch == "2":
-            Functions.searchByArtist(self, active_user)
+            Functions.searchByUser(self, active_user)
         if itemToSearch == "3":
-            Functions.search_albums(self, active_user)
-        if itemToSearch == "4":
             Functions.searchPlaylists(self, active_user)
         else:
             print ("Acción no registrada... Volviendo al menu principal")
         
     
-    def searchBySongs (self, active_userId):
-        song_name = input ("Introduzca el nombre de la canción: ")
+    def searchBySongsOrAlbum (self, active_userId):
+        item_name = input ("\nIntroduzca el nombre de la canción o del álbum: ")
 
         registered_songs = len(self.songs)
         if registered_songs >= 0:
             for i in self.songs:
                 registered_songs -= 1
-                if song_name == i.name:
+                if item_name == i.name:
                     print (i.read)
                     Functions.interactionsMenu(self, i.id, active_userId)
                 else:
                     continue
         else:
-            print("No hay canciones registradas")
+            print("No hay canciones registradas bajo ese nombre.")
+
+        registered_albums = len(self.albums)
+        if registered_albums >= 0:
+            for i in self.albums:
+                registered_albums -= 1
+                if item_name == i.name:
+                    print (f"Nombre del álbum: {i.read}")
+                    print (f"""Tracklist
+{i.read_tracklist}""")
+                    Functions.interactionsMenu(self, i.id, active_userId)
+                else:
+                    continue
+        else:
+            print("No hay albumes registrados bajo ese nombre.")
 
 #TODO: Terminar función de búsqueda de artistas
             
-# Crear lista vacía
-    def searchByArtist (self, active_userId):
+    def searchByUser (self, active_userId):
         artist_name = input ("Nombre del músico: ")
 
         registered_artist = len(self.artists)
@@ -386,10 +400,6 @@ class Functions:
     def searchPlaylists (self, active_userId):
         pass
 
-#TODO: Terminar función de búsqueda de albums
-
-    def search_albums (self, active_userId):
-        pass
 
 #TODO: Terminar función de definir top 5 de cada lista
     def top_5 (self, listToCheck):

@@ -4,7 +4,7 @@ from Playlist import Playlist
 from Album import Album
 
 """ Clase Listener: Escuchas de Metrotify. """
-
+  
 class Listener(User):
 
     def __init__(self, id: str, name: str, email: str, username: str, type: str):

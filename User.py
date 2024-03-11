@@ -1,5 +1,5 @@
 """ Clase User: usuarios de Metrotify. """
-
+ 
 class User:
     
     def __init__(self, id: str, name: str, email: str, username: str, type: str):

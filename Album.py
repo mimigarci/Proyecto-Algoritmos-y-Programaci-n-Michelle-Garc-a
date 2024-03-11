@@ -1,6 +1,6 @@
 from Song import Song
 from User import User
-
+ 
 """ Clase Album: Álbumes de Metrotify. """
 
 class Album:
@@ -55,6 +55,9 @@ artist: {self.artist}
 tracklist: {tracklist}
 self.liked: {users}
 """
+    def read_tracklist (self):
+        for i in self.tracklist:
+            Song.read(i)
         
             
 
