@@ -151,6 +151,9 @@ class Program(Functions):
                 self.playlists.append(newPlaylist)
 
 
+#TODO: Crear y guardar base de datos 
+    def save_database(self):
+        pass
         
 
     def manage_music(self):

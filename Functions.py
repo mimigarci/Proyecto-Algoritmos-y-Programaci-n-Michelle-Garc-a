@@ -10,6 +10,8 @@ import requests
 import os
  
 class Functions:
+    #Abstracción
+
     """Funciones pertenecientes al programa Metrotify
     """    
     
@@ -142,7 +144,6 @@ class Functions:
 
     
 
-    #TODO: Revisar funcionalidad
     """------------------------ Función para registrar una cuenta de Metrotify ------------------------"""
 
     def register_profile (self):
@@ -238,23 +239,6 @@ class Functions:
                     else:
                         print ("El nombre de usuario no se encuentra disponible.")
 
-                # elif modify_attribute == "4":
-                #     newType = input ("""Tipo de cuenta: 
-                #     1. Escucha
-                #     2. Musico 
-                    
-                #     ---> """)
-                #     user.type = newType
-
-                # #TODO: Revisar funcionalidad
-                # elif modify_attribute == "5":
-                #     newId = Functions.generate_id(self)
-                #     if Functions.id_avaiability(self, newId) == True:
-                #         user.id = newId
-                #         print ("Un nuevo ID se ha registrado.")
-                #     else:
-                #         print ("Error 2")
-
                 elif modify_attribute == "4":
                     break
                 else:
@@ -317,41 +301,31 @@ class Functions:
             else:
                 print ("\nOpción inválida\n")
         
-    #TODO: Terminar función de búsqueda
 
     def search_songs (self, active_user):
-        item_name = input ("\nIntroduzca el nombre de la canción: ")
+        song_name = input ("\nIntroduzca el nombre de la canción: ")
+        song_self_list = self.songs
 
-        registered_songs = len(self.songs)
-        matched_items = []
-        if registered_songs >= 0:
-            for i in self.songs:
-                registered_songs -= 1
-                if item_name in i.name:
-                    matched_items.append(i)
-                else:
-                    continue
+        if Functions.check_if_registered(self, song_name, song_self_list) == False:
+            print ("No hay canciones registradas bajo ese nombre")
         else:
-            print("No hay canciones registradas bajo ese nombre")
+            matched_songs = Functions.check_if_registered(self, song_name, song_self_list) 
+            for i in matched_songs:
+                print (f"{matched_songs.index(i)+1}. {i.name}")
 
-        registered_items = len(matched_items)
-        if registered_items > 0:
-            registered_items -= 1
-            for i in matched_items:
-                print (f"{matched_items.index(i)+1}. {i.name}")
-        else:
-            print ("No hay canciones registradas")
+        # if Functions.select_option (self, ):
+        # choice = input ("Desea reproducir una canción? (Y/N)")
+        # if choice == "Y":
+        #     Functions.select_option(self, matched_items)
+        # elif choice == "N":
+        #     print ("")
+        # else:
+        #     print ("...Opción inválida")
 
-        choice = input ("Desea reproducir una canción? (Y/N)")
-        if choice == "Y":
-            Functions.choose(self, matched_items)
-        elif choice == "N":
-            print ("")
-        else:
-            print ("...Opción inválida")
+    #TODO: Revisar funcionalidad
+    def select_option (self, matched_items):
+        chosen = input ("Número de la canción a reproducir:")
 
-    def choose (self, matched_items, active_user):
-        chosen = int(input ("Número de la canción a reproducir:"))
         if chosen == int:
             for i in matched_items:
                 if matched_items.index(i) == chosen-1:
@@ -359,8 +333,24 @@ class Functions:
                 else:
                     continue
 
-        elif ValueError:
+        else:
             print ("Introduzca un número dentro de la lista")
+
+    def check_if_registered(self, item_name, item_self_list):
+        list_items = len(item_self_list)
+        matched_items = []
+        if list_items >= 0:
+            for i in item_self_list:
+                list_items -= 1
+                if item_name in i.name:
+                    matched_items.append(i)
+                else:
+                    continue
+            
+            return matched_items
+        else:
+            return False
+        
 
         
 #TODO: Temrinar funcion de busqueda por albums
@@ -424,6 +414,8 @@ class Functions:
 #TODO: Terminar función de búsqueda de playlists
     def search_playlists (self, active_userId):
         pass
+
+    
 
 
 #TODO: Terminar función de definir top 5 de cada lista
@@ -509,5 +501,5 @@ class Functions:
     def choose_songArtistProfile (self):
         pass
     
-    def choose_song(self):
+    def select_option(self):
         pass

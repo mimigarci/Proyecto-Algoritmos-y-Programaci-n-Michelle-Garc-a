@@ -7,7 +7,25 @@ from User import User
 class Playlist:
 
     def __init__(self, id: str, name: str, description: str, creator: str, tracks: list):
+        """Constructor de la clase Playlist:
 
+        Args:
+            id (str): ID de la playlist
+            name (str): Nombre de la playlist
+            description (str): Descripción de la playlist
+            creator (str): Usuario que creó la playlist
+            tracks (list): Canciones de la playlist
+        """        
+
+        """
+
+            id: 
+            name: 
+            description: 
+            self.creator: 
+            self.tracks: 
+            self.liked: Lista de usuarios que le dieron me gusta a la playlist.
+        """
         self.id = id
         self.name = name
         self.description = description
@@ -15,16 +33,7 @@ class Playlist:
         self.tracks = tracks
         self.liked = []
 
-        """Constructor de la clase Playlist:
-
-            self.id: ID de la playlist
-            self.name: Nombre de la playlist
-            self.description: Descripción de la playlist
-            self.creator: Usuario que creó la playlist
-            self.tracks: Canciones de la playlist
-            self.liked: Lista de usuarios que le dieron me gusta a la playlist.
-        """ 
-
+         
     def read(self):
         """Función para leer los datos de la playlist
 
