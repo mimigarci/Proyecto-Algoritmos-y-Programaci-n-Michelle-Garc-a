@@ -1,6 +1,5 @@
 from User import User
 from Song import Song
-from Playlist import Playlist
 from Album import Album
 
 """ Clase Artist: Músicos de Metrotify. """

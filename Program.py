@@ -1,18 +1,18 @@
-from User import User
 from Artist import Artist
 from Listener import Listener
 from Album import Album
 from Playlist import Playlist
 from Song import Song 
-from Functions import Functions
+from ProfileManagement import ProfileManagement
+from MusicManagement import MusicManagement
+from InteractionManagement import InteractionManagement
 from rich import print
+import requests
 import json
 import os
 
  
-
-
-class Program(Functions):
+class Program(ProfileManagement, MusicManagement, InteractionManagement):
     """Es la encargada de abrir y gestionar todas las operaciones que se tienen que llevar a cabo para gestionar Metrotify
 
     Args:
@@ -36,9 +36,8 @@ class Program(Functions):
         self.albums = []
         self.playlists = []
         self.likes = []
-        
 
-     
+# -------------------------------------------------------------------------------------------------------------------------------
 
     def open_database (self): 
         """Función para leer toda la información dentro de las bases de datos
@@ -49,14 +48,6 @@ class Program(Functions):
             playlists (list): Lista de las playlists registradas dentro de la base de datos.
 
         """ 
-
-# -------------------------------------------------------------------------------------------------------------------------------
-# Esta parte de la función trabaja con la lista de usuarios de la base de datos. Es la encargada de separar toda la información 
-# relevante para crear los objetos de tipo "User" (Usuarios de Metrotify). Además, los clasifica de acuerdo a su tipo. Si el tipo
-# del usuario es músico, se agregará a la lista de artistas, si es escucha se agregará a la lista de escuchas. De no ser ninguno 
-# de los dos, se enviará un mensaje de error dentro del sistema.
-# -------------------------------------------------------------------------------------------------------------------------------
-              
 
         with open('users.text','r') as users_file:
             users = json.load(users_file)
@@ -83,13 +74,6 @@ class Program(Functions):
                 else:
                     print ("Tipo de cuenta no registrado.")
 
-
-# -------------------------------------------------------------------------------------------------------------------------------
-# Esta parte de la función trabaja con la lista de albums de la base de datos. Separa toda la información relevante para crear 
-# los objetos de tipo "Album" (Álbumes de Metrotify). Además, creará los objetos de tipo "Song" correspondientes antes de añadirlos 
-# a la lista del álbum. Los mismos serán añadidos a la lista de canciones de Metrotify. Igualmente, se buscará al artista 
-# correspondiente al álbum dentro de la base de datos y este se registrará como su intérprete.
-# -------------------------------------------------------------------------------------------------------------------------------
      
         with open('albums.text','r') as albums_file:
             albums = json.load(albums_file)
@@ -117,11 +101,7 @@ class Program(Functions):
                 newAlbum = Album(album_id, album_name, album_description, album_cover, album_published, album_genre, album_artist, tracklist)
                 self.albums.append(newAlbum)
 
-# -------------------------------------------------------------------------------------------------------------------------------
-# Esta parte de la función trabaja con la lista de playlists de la base de datos. Separa toda la información relevante para crear 
-# los objetos de tipo "Playlist" (Playlists de Metrotify).
-# -------------------------------------------------------------------------------------------------------------------------------
-  
+
         with open('playlist.text','r') as playlists_file:
             playlists = json.load(playlists_file)
             for i in playlists:
@@ -130,16 +110,9 @@ class Program(Functions):
                 playlist_name = i["name"]
                 playlist_description = i["description"]
                 playlist_creator = i["creator"]
-                playlist_tracks = i["tracks"]
-
-# -------------------------------------------------------------------------------------------------------------------------------                
-# En la lista playlist_tracks se registra el ID de las canciones correspondientes a la lista de reproducción. Para registrar 
-# las canciones correspondientes, se verificará si el id de la canción coincide con alguno que se encuentre registrado dentro 
-# de la lista de canciones de Metrotify. En caso de coincidir, se agregará a la lista de canciones de la playlist, si no coincide 
-# no se agregará nada a la lista de canciones.  
-# -------------------------------------------------------------------------------------------------------------------------------
-                         
+                playlist_tracks = i["tracks"]     
                 tracks = []
+
                 for id_song in playlist_tracks:
                     for song in self.songs:
                         if id_song == song.id:
@@ -150,11 +123,55 @@ class Program(Functions):
                 newPlaylist = Playlist(playlist_id, playlist_name, playlist_description, playlist_creator, tracks)
                 self.playlists.append(newPlaylist)
 
+#-------------------------------------------------------------------------------------------------------------------------------------------------            
+                    
+    def download_database (self):
 
+        """Usuarios de Metrotify"""
+
+        url_users = "https://raw.githubusercontent.com/Algoritmos-y-Programacion/api-proyecto/main/users.json"
+        request_users = requests.get(url_users)
+
+        with open ("users.text", "w") as users_data:
+            users_data.write(request_users.text)
+        
+
+        """Albumes de Metrotify"""
+
+        url_albums = "https://raw.githubusercontent.com/Algoritmos-y-Programacion/api-proyecto/main/albums.json"
+        request_albums = requests.get(url_albums)
+
+        with open ("albums.text", "w") as albums_data:
+            albums_data.write(request_albums.text)
+
+
+        """Playlists de Metrotify"""
+        url_playlist = "https://raw.githubusercontent.com/Algoritmos-y-Programacion/api-proyecto/main/playlists.json"
+        request_playlists = requests.get(url_playlist)
+
+        with open ("playlist.text", "w") as playlists_data:
+            playlists_data.write(request_playlists.text)
+
+        #TODO: Condicional para verificar si se descargaron los datos correctamente
+        
+        # files_list = os.listdir()
+        # downloaded_files = 0
+        # for i in files_list:
+        #     if i == "albums.text" or i == "playlist.text" or i == "users.text":
+        #         downloaded_files += 1
+        #         if downloaded_files == 3:
+        #             print ("---- Base de datos cargada correctamente ----")
+        #         else:
+        #             print ("Hubo un error al cargar la base de datos. Compruebe su conexión a internet.")
+
+        return print ("----- Base de datos descargada correctamente ----")
+
+#-------------------------------------------------------------------------------------------------------------------------------------------------
 #TODO: Crear y guardar base de datos 
     def save_database(self):
         pass
-        
+
+#------------------------------------------------------------------------------------------------------------------------------------------------- 
 
     def manage_music(self):
         """Funcion para manejar el Módulo de Gestión Musical
@@ -181,7 +198,7 @@ class Program(Functions):
             else:
                 print ("Opción inválida")
 
-
+#-------------------------------------------------------------------------------------------------------------------------------------------------
 
     def indicators (self):
         #TODO:  Hacer gráficos (matplotlib o bokeh)
@@ -223,7 +240,9 @@ class Program(Functions):
 
         else:
             print ("Opción inválida")
-    
+
+#-------------------------------------------------------------------------------------------------------------------------------------------------
+            
     #TODO: Revisar funcionalidad
     def listener_menu(self):
         os.system('cls')
@@ -278,7 +297,8 @@ class Program(Functions):
             print ("...El nombre de usuario no se encuentra registrado. Introduzca un nombre de usuario válido")
     
 
-
+#-------------------------------------------------------------------------------------------------------------------------------------------------
+            
     def artist_menu(self):
         os.system('cls')
 
@@ -321,7 +341,7 @@ class Program(Functions):
         else:
             print ("...El nombre de usuario no se encuentra registrado. Introduzca un nombre de usuario válido")
             
-        
+#-------------------------------------------------------------------------------------------------------------------------------------------------   
 
     def menu(self):
         while True:
@@ -356,6 +376,7 @@ Seleccione una acción a realizar:
             else:
                 print ("\nOpción inválida\n")
 
+#-------------------------------------------------------------------------------------------------------------------------------------------------
     def start_program(self):
             print ("\nInicializando programa...")
             print ("""
