@@ -233,18 +233,18 @@ class Program(ProfileManagement, MusicManagement, InteractionManagement, Indicat
                 break
 
             elif option =="2":
-
                 top_5_albums =Program.read_top_5(self, registered_albums)
+                Program.read_top_5(self, top_5_albums)
                 break
 
             elif option =="3":
-
                 top_5_artists = Program.read_top_5(self, registered_artists)
+                Program.read_top_5(self, top_5_artists)
                 break
 
             elif option =="4":
-
                 top_5_listeners = Program.read_top_5(self, registered_listener_streams)
+                Program.read_top_5(self, top_5_listeners)
                 break
 
             elif option =="5":
@@ -264,9 +264,8 @@ class Program(ProfileManagement, MusicManagement, InteractionManagement, Indicat
 
         active_listener = input ("Nombre de usuario del escucha activo (username): ")
 
-        
         registered_listeners = len(self.listeners)
-        if registered_listeners > 0:
+        if Program.existent_username(self, active_listener) == True:
             for i in self.users:
                 registered_listeners -= 1
                 if i.username == active_listener:
@@ -284,19 +283,15 @@ class Program(ProfileManagement, MusicManagement, InteractionManagement, Indicat
         ---> """)
                         if listener_option == "1":
                             Program.search_menu(self, listener_id)
-                            break
 
                         elif listener_option == "2":
                             Program.create_playlist(self, listener_id)
-                            break
 
                         elif listener_option == "3":
                             Program.modify_user(self, listener_id)
-                            break
 
                         elif listener_option == "4":
                             Program.delete_account_data(self, listener_id)
-                            break
 
                         elif listener_option == "5":
                             Program.menu(self)
@@ -306,8 +301,6 @@ class Program(ProfileManagement, MusicManagement, InteractionManagement, Indicat
                             print("\nOpción inválida. Introduzca una opción válida por favor.\n")
                 else:
                     continue
-            else:
-                print ("...Cerrando sesión...\n")
         else:
             print ("...El nombre de usuario no se encuentra registrado. Introduzca un nombre de usuario válido")
     

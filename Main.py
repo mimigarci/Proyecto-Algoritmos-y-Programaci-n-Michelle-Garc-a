@@ -9,7 +9,7 @@ os.system('cls')
 
 #print (os.getcwd())
 
-"""----------------------------------- Función principal de Metrotify ----------------------------------"""
+#----------------------------------- Función principal de Metrotify ----------------------------------"""
 
 def main():
 

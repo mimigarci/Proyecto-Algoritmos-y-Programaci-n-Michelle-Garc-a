@@ -81,7 +81,7 @@ class Functions:
   
 #-------------------------------------------------------------------------------------------------------------------------------------------------
             
-    def existent_user (self, user):
+    def existent_username (self, username):
         """Función para verificar si un nombre de usuario se encuentra registrado. Si este se encuentra registrado, retornará True.
         En caso contrario, retornará False.
 
@@ -95,7 +95,7 @@ class Functions:
         if search_length >= 0:
             for i in self.users:
                 search_length -= 1
-                if i.username == user:
+                if i.username == username:
                     return True
                 else:
                     continue

@@ -77,7 +77,7 @@ class ProfileManagement (MusicManagement):
         
         #Configuración del usuario
         while True:
-            if ProfileManagement.existent_user(self, user.username) == True:
+            if ProfileManagement.existent_username(self, user.username) == True:
                 modify_attribute = input("""----- Configuración de la cuenta ----- 
                                     
     1. Cambiar nombre personal de la cuenta
@@ -230,7 +230,7 @@ class ProfileManagement (MusicManagement):
 
 
 #-------------------------------------------------------------------------------------------------------------------------------------------------
-#TODO: Terminar función de crear playlist de un usuario
+#TODO: Continuar función de crear playlist de un usuario
     def create_playlist (self, active_user_id):
         """Args:
             id (str): ID de la playlist
@@ -247,7 +247,7 @@ class ProfileManagement (MusicManagement):
         playlist_tracks =[]
         
         
-        #Como podría añadir los elementos a la playlist
+        #Como podría añadir los elementos a la playlist??
         # if len(playlist_tracks) == 0:
         #     choose = input ("Des")
 
