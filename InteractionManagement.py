@@ -1,44 +1,9 @@
+from Functions import Functions
 from Like import Like
 
-class InteractionManagement:
+class InteractionManagement(Functions):
     """Clase con las funciones pertenecientes al módulo de gestión de perfiles
     """ 
-
-
-#TODO: Terminar función de definir top 5 de cada lista
-    def top_5 (self, listToCheck):
-        """Función para definir el top 5 de una lista.
-
-        Args:
-            listToCheck (list): lista cuyo top 5 se ha de definir.
-
-        Returns:
-            top_5_list: lista nueva con el top 5 de esa lista inicial.
-        """
-        
-        top_5_list = []
-        for i in range(0, listToCheck+1):
-            for j in listToCheck:
-                if j.streams > [i].streams:
-                    top_5_list.append()
-        return top_5_list
-
-#-------------------------------------------------------------------------------------------------------------------------------------------------
-#TODO: Terminar función de crear playlist de un usuario
-    def create_playlist (self, creator_id):
-        
-        for i in self.users:
-            if i.d == creator_id:
-                pass
-
-#-------------------------------------------------------------------------------------------------------------------------------------------------
-#TODO: Terminar función de lanzar album de un artista
-    def launch_album (self, artist_id):
-
-        for i in self.artists:
-            if i.id == artist_id:
-                pass
-
 #-------------------------------------------------------------------------------------------------------------------------------------------------
 
     def give_like (self, item_id, user_id):
@@ -114,3 +79,4 @@ class InteractionManagement:
             InteractionManagement.remove_like(self, item_id, user_id)
         else:
             print ("Opción inválida... Regresando al menu principal")
+

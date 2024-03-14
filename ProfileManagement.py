@@ -1,141 +1,31 @@
-import uuid
+
+from MusicManagement import MusicManagement
 from Artist import Artist
 from Listener import Listener
+from Song import Song
+from Album import Album
 
-class ProfileManagement:
+import datetime
+
+class ProfileManagement (MusicManagement):
     """Clase con las funciones pertenecientes al módulo de gestión de perfiles
     """
-#-------------------------------------------------------------------------------------------------------------------------------------------------
-   
-    def username_avaiability (self, username):
-        """Función para verificar si un nombre de usuario se encuentra disponible. Si este se encuentra disponible, retornará True.
-        En caso contrario, retornará False.
-
-        Args:
-            username (): Nombre de usuario de un usuario.
-        Returns:
-            Bool
-        """  
-
-        for i in self.users:
-            if username == i.username:
-                return False
-            else:
-                return True
-
-#-------------------------------------------------------------------------------------------------------------------------------------------------
-            
-    def email_avaiability (self, email):
-        """Función para verificar si un email se encuentra disponible. Si este se encuentra disponible, retornará True.
-        En caso contrario, retornará False.
-
-        Args:
-            email (): Dirección de correo de un usuario.
-
-        Returns:
-            Bool
-        """            
-        for i in self.users:
-            if email == i.email:
-                return False
-            else:
-                return True      
-
-#-------------------------------------------------------------------------------------------------------------------------------------------------
-    
-    def id_avaiability (self, id):
-        """Función para verificar si un id se encuentra disponible. Si este se encuentra disponible, retornará True.
-        En caso contrario, retornará False.
-
-        Args:
-            id (): ID de un usuario.
-
-        Returns:
-            Bool
-        """            
-        for i in self.users:
-            if id == i.id:
-                return False
-            else:
-                return True
-            
-#-------------------------------------------------------------------------------------------------------------------------------------------------
-             
-    #TODO: Modificar funcionalidad
-    def validate_email(self, email):
-        """Función para verificar si un email introducido es válido. Si este se encuentra disponible, retornará True.
-        En caso contrario, retornará False.
-
-        Args:
-            email (_type_): Dirección de correo de un usuario.
-
-        Returns:
-            Bool
-        """        
-        count_address = 0
-        count_dots = 0
-        
-        for i in email:
-            if i == "@" or i == ".":
-                count_address += 1
-                count_dots += 1
-                if count_address == 1 and count_dots >= 1:
-                    return True
-                else:
-                    return False
-            else:
-                continue
-  
-#-------------------------------------------------------------------------------------------------------------------------------------------------
-            
-    def existent_user (self, user):
-        """Función para verificar si un nombre de usuario se encuentra registrado. Si este se encuentra registrado, retornará True.
-        En caso contrario, retornará False.
-
-        Args:
-            user (): Nombre de usuario
-
-        Returns:
-            Bool
-        """      
-        search_length = len(self.users)
-        if search_length >= 0:
-            for i in self.users:
-                search_length -= 1
-                if i.username == user:
-                    return True
-                else:
-                    continue
-        else:
-            return False
-
-#-------------------------------------------------------------------------------------------------------------------------------------------------
-        
-    def generate_id(self):
-        """Función para generar un ID
-        """        
-        generated_id = uuid.uuid4
-        while ProfileManagement.id_avaiability(self, generated_id) == False:
-            generated_id = uuid.uuid4
-            if ProfileManagement.id_avaiability(self, generated_id) == True:
-                break
-            else:
-                continue
                 
 #-------------------------------------------------------------------------------------------------------------------------------------------------
     
     def register_profile (self):
         """Función para registrar una cuenta de Metrotify
         """    
+        users = self.users
 
         print ("\n------------- Registro de Usuario ------------- \n")
         user_name = input("Introduzca su nombre: ")  
         user_email = input("Introduzca el email del usuario: ") 
         user_username = input("Introduzca un nombre de usuario: ") 
-        user_id = uuid.uuid4()
+        user_id = ProfileManagement.generate_id
         
         while True:
-            if ProfileManagement.id_avaiability(self, user_id) == True:
+            if ProfileManagement.id_avaiability(self, user_id, users) == True:
                 if ProfileManagement.email_avaiability(self, user_email) and ProfileManagement.validate_email(self, user_email) == True:
                     if ProfileManagement.username_avaiability(self, user_name) == True:
                         user_type = input (""" 
@@ -146,14 +36,14 @@ class ProfileManagement:
     ---> """)
                         if user_type == "1":
                             newArtist = Artist(user_id, user_name, user_email, user_username, user_type)
-                            self.users.append(newArtist)
+                            users.append(newArtist)
                             self.artists.append(newArtist)
                             print ("\nEl usuario se ha registrado correctamente. Puede acceder a la plataforma.\n")
                             break
 
                         elif user_type == "2":
                             newUser = Listener(user_id, user_name, user_email, user_username, user_type)
-                            self.users.append(newUser)
+                            users.append(newUser)
                             self.listeners.append(newUser)
                             print ("\nEl usuario se ha registrado correctamente. Puede acceder a la plataforma.\n")
                             break
@@ -231,7 +121,30 @@ class ProfileManagement:
             else:
                 print ("El usuario no se encuentra registrado")
                 break
+#-------------------------------------------------------------------------------------------------------------------------------------------------
+                    
+    def search_profile (self, active_user_id):
+            matched_user = []
+            user_username = input ("Nombre de usuario del perfil: ")
 
+            registered_users = len(self.users)
+            if registered_users > 0:
+                for i in self.users:
+                    registered_users -= 1
+                    if user_username in i.username:
+                        matched_user.append(i)
+                    else:
+                        continue
+            else:
+                print ("No hay usuarios registrados bajo ese nombre")
+
+            
+            for m in matched_user:
+                for j in range(1, len(matched_user)+1):
+                    print (F"{j}. {m.name}")
+
+            return (matched_user, active_user_id)
+    
 #-------------------------------------------------------------------------------------------------------------------------------------------------
 
     def delete_account_data (self, account_id):
@@ -253,40 +166,106 @@ class ProfileManagement:
         else:
             print ("No hay usuarios registrados.")
 
+
+
 #-------------------------------------------------------------------------------------------------------------------------------------------------
 
-    def search_user (self):
-        artist_name = input ("Nombre del músico: ")
+    def launch_album (self, artist_id: str):
+        """_summary_
 
-        registered_artist = len(self.artists)
-        if registered_artist >= 0:
-            for i in self.artists:
-                registered_artist -= 1
-                if artist_name == i.name:
-                    print (i.read)
+        Args:
+            artist_id (str): _description_
+        """     
+        albums_list = self.albums
 
-                    choose_view = input ("""
-1. Ver canciones del músico
-2. Ver albumes del músico
-    
----> """)
-                    if choose_view == "1":   
-                        for s in i.albums:
-                            print (s.read)
-                            
-                            select = input ("Desea escuchar una canción?")
-                            
-                            if select == "1":
-                                pass
-                            else:
-                                pass
-                            
-                    elif choose_view == "2":
-                        for a in i.albums:
-                            print (a.read)
-                else:
-                    continue
+        for i in self.artists:
+            if i.id == artist_id:
+                album_artist = artist_id
+                album_published = datetime.date.today()
+                album_id = ProfileManagement.generate_id(self, albums_list)
+
+                album_name = input ("Nombre del álbum: ")
+                album_description = input ("Descripción del álbum: ")
+                album_cover = input ("Link de la portada del álbum: ")
+                album_genre = input ("Género musical del álbum: ")
+                album_tracklist = []
                 
+                #TODO: Realizar validaciones necesarias
+                
+                songs_list = self.songs
+                added_songs_number = int(input("Número de canciones del album: "))
 
-        else:
-            print("No hay canciones registradas")
+                while True:
+                    if type(added_songs_number) == int:
+                        for i in range(0, added_songs_number):
+                            print (f"\n{i+1}. Track")
+                            song_artist_id = artist_id
+                            song_id = ProfileManagement.generate_id(self, songs_list)
+                            song_name = input ("Nombre de la canción: ")
+                            song_duration = input ("Duración de la canción: ")
+                            song_link = input ("Link de la canción (soundcloud): ")
+
+                            newSong = Song(song_id, song_name, song_duration, song_link, song_artist_id)
+                            album_tracklist.append(newSong)
+                            self.songs.append(newSong)
+
+                        newAlbum = Album(album_id, album_name, album_description, album_cover, album_published, album_genre, album_artist, album_tracklist)
+                        self.albums.append(newAlbum)
+
+
+                        for i in self.artists:
+                            if i.id == artist_id:
+                                i.albums.append(newAlbum)
+                            else:
+                                continue
+
+                        break
+                            
+                    elif ValueError:
+                        print ("Introduzca un número entero.")
+                    else:
+                        print ("Lol no se que paso")
+                        break
+
+
+
+#-------------------------------------------------------------------------------------------------------------------------------------------------
+#TODO: Terminar función de crear playlist de un usuario
+    def create_playlist (self, active_user_id):
+        """Args:
+            id (str): ID de la playlist
+            name (str): Nombre de la playlist
+            description (str): Descripción de la playlist
+            creator (str): Usuario que creó la playlist
+            tracks (list): Canciones de la playlist
+        """     
+        playlists_list = self.playlists
+        playlist_id = ProfileManagement.generate_id(self, playlists_list)
+        playlist_name = input ("Nombre de la playlist: ")
+        playlist_description = input ("Descripción de la playlist: ")
+        playlist_creator = active_user_id
+        playlist_tracks =[]
+        
+        
+        #Como podría añadir los elementos a la playlist
+        # if len(playlist_tracks) == 0:
+        #     choose = input ("Des")
+
+        #     song_name = input ("\nIntroduzca el nombre de la canción a agregar a la playlist: ")
+        #     song_self_list = self.songs
+
+        #     if MusicManagement.check_name_registered(self, song_name, song_self_list) == False:
+        #         print ("No hay canciones registradas bajo ese nombre")
+        #     else:
+        #         matched_songs = MusicManagement.check_name_registered(self, song_name, song_self_list) 
+
+        #     for i in matched_songs:
+        #         print (f"{matched_songs.index(i)+1}. {i.name}")
+
+        #     song_to_add = MusicManagement.select_song(self, matched_songs)
+
+        #     if song_to_add == object:
+        #         playlist_tracks.append(song_to_add)
+
+        
+

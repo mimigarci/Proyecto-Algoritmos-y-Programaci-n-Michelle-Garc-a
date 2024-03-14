@@ -17,15 +17,6 @@ class Playlist:
             tracks (list): Canciones de la playlist
         """        
 
-        """
-
-            id: 
-            name: 
-            description: 
-            self.creator: 
-            self.tracks: 
-            self.liked: Lista de usuarios que le dieron me gusta a la playlist.
-        """
         self.id = id
         self.name = name
         self.description = description

@@ -26,13 +26,9 @@ class User:
         Returns:
             string: información del usuario
         """        
-        return f""" -------- Información del usuario {self.id} --------
-
-ID del usuario: {self.id}
+        return f"""
 Nombre: {self.name}
-Email: {self.email}
-Username: {self.username}
-Tipo: {self.id}
+Nombre de Usuario: {self.username}
 
 """
         

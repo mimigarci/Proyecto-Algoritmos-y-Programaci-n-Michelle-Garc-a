@@ -33,19 +33,9 @@ class Song:
 Nombre: {self.id}
 Duración: {self.id}
 """
-    
-    def song_menu (self, song: object, active_user):
-        """_summary_
-
-        Args:
-            song (_type_): Objeto de tipo canción
-            active_user (_type_): Id del usuario activo
-        """        
-        song.read
-        reproduce = input ("Desea reproducir esta canción? (Y/N)")
 
 
 #TODO: Terminar reproductor de canciones
-    def play_song(self):
+    def play_song(self, active_userId):
         pass
     

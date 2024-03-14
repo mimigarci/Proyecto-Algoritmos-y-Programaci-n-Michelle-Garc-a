@@ -1,23 +1,27 @@
+from ProfileManagement import ProfileManagement
+from MusicManagement import MusicManagement
+from InteractionManagement import InteractionManagement
+from Indicators import Indicators
 from Artist import Artist
 from Listener import Listener
 from Album import Album
 from Playlist import Playlist
 from Song import Song 
-from ProfileManagement import ProfileManagement
-from MusicManagement import MusicManagement
-from InteractionManagement import InteractionManagement
 from rich import print
 import requests
 import json
 import os
 
  
-class Program(ProfileManagement, MusicManagement, InteractionManagement):
-    """Es la encargada de abrir y gestionar todas las operaciones que se tienen que llevar a cabo para gestionar Metrotify
+class Program(ProfileManagement, MusicManagement, InteractionManagement, Indicators):
+    """_suEs la encargada de abrir y gestionar todas las operaciones que se tienen que llevar a cabo para gestionar la aplicaciónmmary_
 
     Args:
-        Functions (_type_): Clase con todas las funciones a utilizar del programa
-    """    
+        ProfileManagement (class): Módulo de Gestión de Perfiles
+        MusicManagement (class): Módulo de Gestión Musical
+        InteractionManagement (class): Módulo de Gestión de Interacciones
+        Indicators (class): Indicadores
+    """     
     def __init__(self):
         """Constructor de la clase Programa:
 
@@ -37,6 +41,50 @@ class Program(ProfileManagement, MusicManagement, InteractionManagement):
         self.playlists = []
         self.likes = []
 
+
+#-------------------------------------------------------------------------------------------------------------------------------------------------            
+                    
+    def download_database (self):
+
+        """Usuarios de Metrotify"""
+
+        url_users = "https://raw.githubusercontent.com/Algoritmos-y-Programacion/api-proyecto/main/users.json"
+        request_users = requests.get(url_users)
+
+        with open ("users.text", "w") as users_data:
+            users_data.write(request_users.text)
+        
+
+        """Albumes de Metrotify"""
+
+        url_albums = "https://raw.githubusercontent.com/Algoritmos-y-Programacion/api-proyecto/main/albums.json"
+        request_albums = requests.get(url_albums)
+
+        with open ("albums.text", "w") as albums_data:
+            albums_data.write(request_albums.text)
+
+
+        """Playlists de Metrotify"""
+        url_playlist = "https://raw.githubusercontent.com/Algoritmos-y-Programacion/api-proyecto/main/playlists.json"
+        request_playlists = requests.get(url_playlist)
+
+        with open ("playlist.text", "w") as playlists_data:
+            playlists_data.write(request_playlists.text)
+
+        #TODO: Condicional para verificar si se descargaron los datos correctamente
+        
+        # files_list = os.listdir()
+        # downloaded_files = 0
+        # for i in files_list:
+        #     if i == "albums.text" or i == "playlist.text" or i == "users.text":
+        #         downloaded_files += 1
+        #         if downloaded_files == 3:
+        #             print ("---- Base de datos cargada correctamente ----")
+        #         else:
+        #             print ("Hubo un error al cargar la base de datos. Compruebe su conexión a internet.")
+
+        return print ("----- Base de datos descargada correctamente ----")
+    
 # -------------------------------------------------------------------------------------------------------------------------------
 
     def open_database (self): 
@@ -123,49 +171,6 @@ class Program(ProfileManagement, MusicManagement, InteractionManagement):
                 newPlaylist = Playlist(playlist_id, playlist_name, playlist_description, playlist_creator, tracks)
                 self.playlists.append(newPlaylist)
 
-#-------------------------------------------------------------------------------------------------------------------------------------------------            
-                    
-    def download_database (self):
-
-        """Usuarios de Metrotify"""
-
-        url_users = "https://raw.githubusercontent.com/Algoritmos-y-Programacion/api-proyecto/main/users.json"
-        request_users = requests.get(url_users)
-
-        with open ("users.text", "w") as users_data:
-            users_data.write(request_users.text)
-        
-
-        """Albumes de Metrotify"""
-
-        url_albums = "https://raw.githubusercontent.com/Algoritmos-y-Programacion/api-proyecto/main/albums.json"
-        request_albums = requests.get(url_albums)
-
-        with open ("albums.text", "w") as albums_data:
-            albums_data.write(request_albums.text)
-
-
-        """Playlists de Metrotify"""
-        url_playlist = "https://raw.githubusercontent.com/Algoritmos-y-Programacion/api-proyecto/main/playlists.json"
-        request_playlists = requests.get(url_playlist)
-
-        with open ("playlist.text", "w") as playlists_data:
-            playlists_data.write(request_playlists.text)
-
-        #TODO: Condicional para verificar si se descargaron los datos correctamente
-        
-        # files_list = os.listdir()
-        # downloaded_files = 0
-        # for i in files_list:
-        #     if i == "albums.text" or i == "playlist.text" or i == "users.text":
-        #         downloaded_files += 1
-        #         if downloaded_files == 3:
-        #             print ("---- Base de datos cargada correctamente ----")
-        #         else:
-        #             print ("Hubo un error al cargar la base de datos. Compruebe su conexión a internet.")
-
-        return print ("----- Base de datos descargada correctamente ----")
-
 #-------------------------------------------------------------------------------------------------------------------------------------------------
 #TODO: Crear y guardar base de datos 
     def save_database(self):
@@ -200,50 +205,60 @@ class Program(ProfileManagement, MusicManagement, InteractionManagement):
 
 #-------------------------------------------------------------------------------------------------------------------------------------------------
 
+    #TODO:  Hacer gráficos (matplotlib o bokeh)
     def indicators (self):
-        #TODO:  Hacer gráficos (matplotlib o bokeh)
+        registered_songs = self.songs
+        registered_albums = self.albums
+        registered_artists = self.artists
+        registered_listener_streams = self.listeners
+
+        while True:
         
-        option = input ("""
-¿Qué desea ver?
-                            
-1. Top 5 canciones más escuchadas
-2. Top 5 álbumes más escuchados
-3. Top 5 artistas más escuchados
-4. Top 5 escuchas más escuchados
-5. Regresar
-                                                       
----> """)
-        
-        top_5_songs = []
-        top_5_artists = []
-        top_5_playlists = []
-        top_5_listeners = []
+            option = input ("""
+    ¿Qué desea ver?
+                                
+    1. Top 5 canciones más escuchadas
+    2. Top 5 álbumes más escuchados
+    3. Top 5 músicos más escuchados
+    4. Top 5 escuchas que más han utilizado la plataforma
+    5. Ver gráficas
+    6. Regresar
+                                                        
+    ---> """)
+            
 
-        if option =="1":
-            for i in top_5_songs:
-                print(i.read)
+            if option =="1":
+                top_5_songs = Program.set_top_5(self, registered_songs)
+                Program.read_top_5(self, top_5_songs)
+                break
 
-        elif option =="2":
-            for i in top_5_artists:
-                print(i.read)
+            elif option =="2":
 
-        elif option =="3":
-            for i in top_5_playlists:
-                print(i.read)
+                top_5_albums =Program.read_top_5(self, registered_albums)
+                break
 
-        elif option =="4":
-            for i in top_5_listeners:
-                print(i.read)
+            elif option =="3":
 
-        elif option =="5":
-            Program.menu()
+                top_5_artists = Program.read_top_5(self, registered_artists)
+                break
 
-        else:
-            print ("Opción inválida")
+            elif option =="4":
+
+                top_5_listeners = Program.read_top_5(self, registered_listener_streams)
+                break
+
+            elif option =="5":
+
+                pass
+
+            elif option =="6":
+                break
+
+            else:
+                print ("Opción inválida")
 
 #-------------------------------------------------------------------------------------------------------------------------------------------------
-            
-    #TODO: Revisar funcionalidad
+
     def listener_menu(self):
         os.system('cls')
 
@@ -292,7 +307,7 @@ class Program(ProfileManagement, MusicManagement, InteractionManagement):
                 else:
                     continue
             else:
-                print ("...El nombre de usuario no se encuentra registrado. Introduzca un nombre de usuario válido\n")
+                print ("...Cerrando sesión...\n")
         else:
             print ("...El nombre de usuario no se encuentra registrado. Introduzca un nombre de usuario válido")
     
