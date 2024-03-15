@@ -303,26 +303,30 @@ class Program(ProfileManagement, MusicManagement, InteractionManagement, Indicat
                     while True:
                         listener_option = input ("""Seleccione una acción
                                         
-    1. Acceder al buscador
-    2. Crear una playlist
-    3. Cambiar la información personal de la cuenta
-    4. Eliminar cuenta
-    5. Regresar
+    1. Buscar una canción
+    2. Buscar un perfil
+    3. Crear una playlist
+    4. Cambiar la información personal de la cuenta
+    5. Eliminar cuenta
+    6. Regresar
                                         
         ---> """)
                         if listener_option == "1":
                             Program.search_menu(self, listener_id)
 
                         elif listener_option == "2":
-                            Program.create_playlist(self, listener_id)
+                            Program.search_profile(self)
 
                         elif listener_option == "3":
-                            Program.modify_user(self, listener_id)
+                            Program.create_playlist(self, listener_id)
 
                         elif listener_option == "4":
-                            Program.delete_account_data(self, listener_id)
+                            Program.modify_user(self, listener_id)
 
                         elif listener_option == "5":
+                            Program.delete_account_data(self, listener_id)
+
+                        elif listener_option == "6":
                             Program.menu(self)
                             break
 
@@ -351,7 +355,7 @@ class Program(ProfileManagement, MusicManagement, InteractionManagement, Indicat
         registered_artists_len = len(registered_artists)
         if registered_artists_len >= 0:
             for i in self.users:
-                registered_artists -= 1
+                registered_artists_len -= 1
                 if i.username == active_artist:
                     artist_id = i.id
                     while True:
@@ -380,8 +384,6 @@ class Program(ProfileManagement, MusicManagement, InteractionManagement, Indicat
                             print("\nOpción inválida\n")
                 else:
                     continue
-            else:
-                print ("...El nombre de usuario no se encuentra registrado. Introduzca un nombre de usuario válido")
         else:
             print ("...El nombre de usuario no se encuentra registrado. Introduzca un nombre de usuario válido")
             
@@ -395,10 +397,10 @@ Seleccione una acción a realizar:
 0. Cargar API                          
 1. Cargar data de la aplicación                          
 2. Iniciar sesión                                                                                                                              
-3. Registrar un nuevo usuario                                                                                                                              
+3. Registrar un usuario nuevo                                                                                                                              
 4. Ver Indicadores                                              
-5. Salir y guardar                                         
-6. Salir y no guardar                                         
+5. Guardar                                         
+6. Salir                                     
 
 ---> """)
             
@@ -421,8 +423,6 @@ Seleccione una acción a realizar:
 
             elif choice == "5":
                 Program.write_in_data_txt(self)
-                print ("\nCerrando programa...")
-                break
 
             elif choice == "6":
                 print ("\nCerrando programa...")

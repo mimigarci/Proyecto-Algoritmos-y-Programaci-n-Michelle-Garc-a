@@ -74,9 +74,10 @@ class Functions:
             Bool
         """        
         #TODO: Cambiar validacion de email
-        valid_pattern = r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]*\.*[com|org|edu]{3}$)'
+     
+        validation = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,7}\b'
 
-        if re.match(valid_pattern, email) == True:
+        if re.fullmatch(validation, email):
             return True
         else:
             return False
@@ -127,3 +128,30 @@ class Functions:
             return Artist
         else:
             return None
+
+#-------------------------------------------------------------------------------------------------------------------------------------------------
+            
+    def check_name_registered(self, item_name: str, item_self_list: list):
+        """Función para obtener todos los objetos registrados bajo un nombre. Si se encuentra registrado bajo ese nombre, se agregará a una lista con los
+        objetos coincidentes. En caso contrario, se retornará un booleano indicando que no existen objetos bajo ese nombre.
+
+        Args:
+            item_name (str): Nombre del objeto
+            item_self_list (list): Lista donde se encuentra el objeto
+
+        Returns:
+            matched_items (list): lista con los objetos coincidentes o un booleano False
+        """        
+        list_items = len(item_self_list)
+        matched_items = []
+        if list_items >= 0:
+            for i in item_self_list:
+                list_items -= 1
+                if item_name in i.name:
+                    matched_items.append(i)
+                else:
+                    continue
+            
+            return matched_items
+        else:
+            return False
