@@ -11,83 +11,71 @@ from rich import print
 import requests
 import json
 import os
+import pickle
 
  
 class Program(ProfileManagement, MusicManagement, InteractionManagement, Indicators):
-    """_suEs la encargada de abrir y gestionar todas las operaciones que se tienen que llevar a cabo para gestionar la aplicaciónmmary_
+    """_Es la encargada de abrir y gestionar todas las operaciones que se tienen que llevar a cabo para gestionar la aplicación_
 
     Args:
         ProfileManagement (class): Módulo de Gestión de Perfiles
         MusicManagement (class): Módulo de Gestión Musical
         InteractionManagement (class): Módulo de Gestión de Interacciones
         Indicators (class): Indicadores
-    """     
+    """   
+
     def __init__(self):
         """Constructor de la clase Programa:
 
             self.songs: Lista con todas las canciones registradas en Metrotify.
             self.users: Lista de todos los usuarios registrados en Metrotify.
-            self.artists: Lista con todos los usuarios de tipo "músico".
-            self.listeners: Lista con todos los usuarios de tipo "escucha".
             self.albums: Lista con todas los álbums registrados dentro de Metrotify.
             self.playlists: Lista con todas las listas de reproducción dentro de Metrotify.
         """   
-
         self.songs = []
         self.users =  []
-        self.artists = []
-        self.listeners = []
         self.albums = []
         self.playlists = []
-        self.likes = []
 
 
 #-------------------------------------------------------------------------------------------------------------------------------------------------            
                     
-    def download_database (self):
+    def download_API (self):
 
         """Usuarios de Metrotify"""
+        try:
+            url_users = "https://raw.githubusercontent.com/Algoritmos-y-Programacion/api-proyecto/main/users.json"
+            request_users = requests.get(url_users)
 
-        url_users = "https://raw.githubusercontent.com/Algoritmos-y-Programacion/api-proyecto/main/users.json"
-        request_users = requests.get(url_users)
+            with open ("users.text", "w") as users_data:
+                users_data.write(request_users.text)
+            
 
-        with open ("users.text", "w") as users_data:
-            users_data.write(request_users.text)
-        
+            """Albumes de Metrotify"""
 
-        """Albumes de Metrotify"""
+            url_albums = "https://raw.githubusercontent.com/Algoritmos-y-Programacion/api-proyecto/main/albums.json"
+            request_albums = requests.get(url_albums)
 
-        url_albums = "https://raw.githubusercontent.com/Algoritmos-y-Programacion/api-proyecto/main/albums.json"
-        request_albums = requests.get(url_albums)
-
-        with open ("albums.text", "w") as albums_data:
-            albums_data.write(request_albums.text)
+            with open ("albums.text", "w") as albums_data:
+                albums_data.write(request_albums.text)
 
 
-        """Playlists de Metrotify"""
-        url_playlist = "https://raw.githubusercontent.com/Algoritmos-y-Programacion/api-proyecto/main/playlists.json"
-        request_playlists = requests.get(url_playlist)
+            """Playlists de Metrotify"""
+            url_playlist = "https://raw.githubusercontent.com/Algoritmos-y-Programacion/api-proyecto/main/playlists.json"
+            request_playlists = requests.get(url_playlist)
 
-        with open ("playlist.text", "w") as playlists_data:
-            playlists_data.write(request_playlists.text)
+            with open ("playlist.text", "w") as playlists_data:
+                playlists_data.write(request_playlists.text)
 
-        #TODO: Condicional para verificar si se descargaron los datos correctamente
-        
-        # files_list = os.listdir()
-        # downloaded_files = 0
-        # for i in files_list:
-        #     if i == "albums.text" or i == "playlist.text" or i == "users.text":
-        #         downloaded_files += 1
-        #         if downloaded_files == 3:
-        #             print ("---- Base de datos cargada correctamente ----")
-        #         else:
-        #             print ("Hubo un error al cargar la base de datos. Compruebe su conexión a internet.")
+            print ("----- Base de datos descargada correctamente ----")
 
-        return print ("----- Base de datos descargada correctamente ----")
+        except:
+            print("No tiene conexion.")
+
     
 # -------------------------------------------------------------------------------------------------------------------------------
 
-    def open_database (self): 
+    def open_API (self): 
         """Función para leer toda la información dentro de las bases de datos
 
         Args:
@@ -110,14 +98,12 @@ class Program(ProfileManagement, MusicManagement, InteractionManagement, Indicat
 
                     newUser = Artist(user_id, user_name, user_email, user_username, user_type)
                     self.users.append(newUser)
-                    self.artists.append(newUser)
 
                 elif i["type"] == "listener":
                     user_type = "listener"
 
                     newUser = Listener(user_id, user_name, user_email, user_username, user_type)
                     self.users.append(newUser)
-                    self.listeners.append(newUser)
                 
                 else:
                     print ("Tipo de cuenta no registrado.")
@@ -172,9 +158,30 @@ class Program(ProfileManagement, MusicManagement, InteractionManagement, Indicat
                 self.playlists.append(newPlaylist)
 
 #-------------------------------------------------------------------------------------------------------------------------------------------------
-#TODO: Crear y guardar base de datos 
-    def save_database(self):
-        pass
+
+    def write_in_data_txt(self):  
+        data_to_save = [self.users, self.songs, self.albums, self.playlists]
+
+        file_name = 'Data.pickle'
+
+        with open(file_name, 'wb') as k:
+            pickle.dump(data_to_save, k)
+        print ("=== Guardado finalizado ===")
+
+#-------------------------------------------------------------------------------------------------------------------------------------------------
+        
+    def get_info_from_data_txt (self):
+        file_name = 'Data.pickle'
+
+        with open(file_name, "rb") as m:
+            info_from_data_txt = pickle.load(m)
+            
+            self.users= info_from_data_txt[0] 
+            self.songs= info_from_data_txt[1] 
+            self.albums= info_from_data_txt[2] 
+            self.playlists= info_from_data_txt[3]
+
+            print(f'\n Lectura finalizada')            
 
 #------------------------------------------------------------------------------------------------------------------------------------------------- 
 
@@ -209,8 +216,23 @@ class Program(ProfileManagement, MusicManagement, InteractionManagement, Indicat
     def indicators (self):
         registered_songs = self.songs
         registered_albums = self.albums
-        registered_artists = self.artists
-        registered_listener_streams = self.listeners
+        registered_artists = []
+        registered_listeners = []
+
+
+        registered_users = len(self.users)
+        if registered_users >= 0:
+            for i in self.users:
+                registered_users -= 1
+                if Program.user_type(self, i) == Artist:
+                    registered_artists.append(i)
+                elif Program.user_type(self, i) == Listener:
+                    registered_listeners.append(i)
+                else:
+                    continue
+        else:
+            print ("No hay usuarios registrados")
+
 
         while True:
         
@@ -243,12 +265,12 @@ class Program(ProfileManagement, MusicManagement, InteractionManagement, Indicat
                 break
 
             elif option =="4":
-                top_5_listeners = Program.read_top_5(self, registered_listener_streams)
+                top_5_listeners = Program.read_top_5(self, registered_listeners)
                 Program.read_top_5(self, top_5_listeners)
                 break
 
             elif option =="5":
-
+                
                 pass
 
             elif option =="6":
@@ -263,11 +285,18 @@ class Program(ProfileManagement, MusicManagement, InteractionManagement, Indicat
         os.system('cls')
 
         active_listener = input ("Nombre de usuario del escucha activo (username): ")
+        registered_listeners = []
 
-        registered_listeners = len(self.listeners)
+        for i in self.users:
+            if Program.user_type(self, i) == Listener:
+                registered_listeners.append(i)
+            else:
+                continue
+
+        registered_listeners_len = len(registered_listeners)
         if Program.existent_username(self, active_listener) == True:
             for i in self.users:
-                registered_listeners -= 1
+                registered_listeners_len -= 1
                 if i.username == active_listener:
                     listener_id = i.id
 
@@ -311,9 +340,16 @@ class Program(ProfileManagement, MusicManagement, InteractionManagement, Indicat
         os.system('cls')
 
         active_artist = input ("Nombre de usuario del musico activo (username): ")
+        registered_artists = []
 
-        registered_artists = len(self.artists)
-        if registered_artists >= 0:
+        for i in self.users:
+            if Program.user_type(self, i) == Artist:
+                registered_artists.append(i)
+            else:
+                continue
+
+        registered_artists_len = len(registered_artists)
+        if registered_artists_len >= 0:
             for i in self.users:
                 registered_artists -= 1
                 if i.username == active_artist:
@@ -356,31 +392,42 @@ class Program(ProfileManagement, MusicManagement, InteractionManagement, Indicat
             choice = input("""
 Seleccione una acción a realizar:                
 
-0. Cargar base de datos                            
-1. Iniciar sesión                                                                                                                              
-2. Registrar un nuevo usuario                                                                                                                              
-3. Ver Indicadores                                              
-4. Salir                                           
+0. Cargar API                          
+1. Cargar data de la aplicación                          
+2. Iniciar sesión                                                                                                                              
+3. Registrar un nuevo usuario                                                                                                                              
+4. Ver Indicadores                                              
+5. Salir y guardar                                         
+6. Salir y no guardar                                         
 
 ---> """)
             
             if choice == "0":
-                Program.download_database(self)
-                Program.open_database(self)
+                Program.download_API(self)
+                Program.open_API(self)
                 os.system('cls')
 
             elif choice == "1":
+                Program.get_info_from_data_txt(self)
+                
+            elif choice == "2":
                 Program.manage_music(self)
             
-            elif choice == "2":
+            elif choice == "3":
                 Program.register_profile(self)
                 
-            elif choice == "3":
+            elif choice == "4":
                 Program.indicators(self)
 
-            elif choice == "4":
+            elif choice == "5":
+                Program.write_in_data_txt(self)
                 print ("\nCerrando programa...")
                 break
+
+            elif choice == "6":
+                print ("\nCerrando programa...")
+                break
+
             else:
                 print ("\nOpción inválida\n")
 
@@ -390,3 +437,4 @@ Seleccione una acción a realizar:
             print ("""
                     Bienvenido a Metrotify!""")
             Program.menu(self)
+

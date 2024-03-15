@@ -18,7 +18,6 @@ class Song:
         self.name = name
         self.duration = duration
         self.link = link
-        self.artistId = artistId
         self.streams = 0
         self.liked = []
 

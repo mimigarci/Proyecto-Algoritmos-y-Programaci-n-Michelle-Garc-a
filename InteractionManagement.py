@@ -1,4 +1,5 @@
 from Functions import Functions
+from Artist import Artist
 from Like import Like
 
 class InteractionManagement(Functions):
@@ -41,9 +42,12 @@ class InteractionManagement(Functions):
                     else:
                         continue
 
-                for p in self.artists:
-                    if p.item == item_id:
-                        p.liked.append(newLike)
+                for p in self.users:
+                    if InteractionManagement.user_type(self, p) == Artist:
+                        if p.item == item_id:
+                            p.liked.append(newLike)
+                        else:
+                            continue
                     else:
                         continue
             else:

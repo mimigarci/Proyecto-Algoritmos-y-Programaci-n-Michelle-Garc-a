@@ -104,10 +104,17 @@ class MusicManagement (Functions):
         artist_username = input("Nombre de usuario del artista: ")
         matched_artists = []
         artist_songs = []
+        registered_artists_list = []
 
-        registered_artists = len(self.artists)
+        for i in self.users:
+            if MusicManagement.user_type(self, i) == Artist:
+                registered_artists_list.append(i)
+            else:
+                continue
+
+        registered_artists = len(registered_artists_list)
         if registered_artists >= 0:
-            for i in self.artists:
+            for i in registered_artists_list:
                 registered_artists -= 1
                 if artist_username in i.username:
                     matched_artists.append(i)
@@ -261,22 +268,30 @@ class MusicManagement (Functions):
         Returns:
             object : Canción correspondiente al número
         """   
-
-        song_number = int (input ("Introduzca el número de la canción: "))    
-        if song_number == int:
-            for i in matched_items_list:
-                if matched_items_list.index(i)+1 == song_number:
-                    object = i
-                    print (object.read)
+        while True:
+            song_number = int (input ("Introduzca el número de la canción: "))    
+            registered_items = len(matched_items_list)
+            object
+            if song_number == int:
+                if registered_items >= 0:
+                    for i in matched_items_list:
+                        registered_items -= 1
+                        if matched_items_list.index(i)+1 == song_number:
+                            object = i
+                            print (object.read)
+                            break
+                        else:
+                            continue
                 else:
-                    continue
-        elif ValueError:
-            print ("Debe introducir un número válido (entero)")
+                    print ("Lista vacía")
+            elif ValueError:
+                print ("Debe introducir un número válido (entero)")
 
-        else:
-            print ("lol, el error esta en wanna play song")
-        
-        return object
+            else:
+                print ("lol, el error esta en wanna play song")
+                break
+            
+            return object
     
 #-------------------------------------------------------------------------------------------------------------------------------------------------
             

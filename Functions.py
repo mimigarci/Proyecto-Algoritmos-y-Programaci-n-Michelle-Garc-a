@@ -1,3 +1,5 @@
+from Listener import Listener
+from Artist import Artist
 import uuid
 import re
 
@@ -71,7 +73,7 @@ class Functions:
         Returns:
             Bool
         """        
-        
+        #TODO: Cambiar validacion de email
         valid_pattern = r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]*\.*[com|org|edu]{3}$)'
 
         if re.match(valid_pattern, email) == True:
@@ -117,3 +119,11 @@ class Functions:
 
 #-------------------------------------------------------------------------------------------------------------------------------------------------
         
+    def user_type (self, user):
+        
+        if type(user) == Listener:
+            return Listener
+        elif type(user) ==  Artist:
+            return Artist
+        else:
+            return None

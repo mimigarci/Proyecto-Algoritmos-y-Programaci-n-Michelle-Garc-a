@@ -7,8 +7,6 @@ from Program import Program
 import os
 os.system('cls')
 
-#print (os.getcwd())
-
 #----------------------------------- Función principal de Metrotify ----------------------------------"""
 
 def main():

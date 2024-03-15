@@ -37,14 +37,12 @@ class ProfileManagement (MusicManagement):
                         if user_type == "1":
                             newArtist = Artist(user_id, user_name, user_email, user_username, user_type)
                             users.append(newArtist)
-                            self.artists.append(newArtist)
                             print ("\nEl usuario se ha registrado correctamente. Puede acceder a la plataforma.\n")
                             break
 
                         elif user_type == "2":
                             newUser = Listener(user_id, user_name, user_email, user_username, user_type)
                             users.append(newUser)
-                            self.listeners.append(newUser)
                             print ("\nEl usuario se ha registrado correctamente. Puede acceder a la plataforma.\n")
                             break
                             
@@ -58,7 +56,7 @@ class ProfileManagement (MusicManagement):
                     print ("\nEl correo electrónico que usted ha introducido ya se encuentra registrado. Por favor introduzca otro.\n")
                     break
             else:
-                user_id = ProfileManagement.generate_id(self)
+                user_id = ProfileManagement.generate_id(self, users)
 
 #-------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -177,8 +175,15 @@ class ProfileManagement (MusicManagement):
             artist_id (str): _description_
         """     
         albums_list = self.albums
+        registered_artist_list = []
 
-        for i in self.artists:
+        for i in self.users:
+            if ProfileManagement.user_type(self, i) == Artist:
+                registered_artist_list.append(i)
+            else:
+                continue
+
+        for i in registered_artist_list:
             if i.id == artist_id:
                 album_artist = artist_id
                 album_published = datetime.date.today()
@@ -213,7 +218,7 @@ class ProfileManagement (MusicManagement):
                         self.albums.append(newAlbum)
 
 
-                        for i in self.artists:
+                        for i in registered_artist_list:
                             if i.id == artist_id:
                                 i.albums.append(newAlbum)
                             else:
