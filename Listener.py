@@ -27,12 +27,12 @@ class Listener(User):
 
     
     def read_attribute (self):
+        
         """Función para leer las canciones, albums y playlist de un escucha de Metrotify
 
         Returns:
             string: Información del escucha
         """  
-        msg = ""
         choice = input("""
 1. Ver playlists creados
 2. Ver canciones favoritas

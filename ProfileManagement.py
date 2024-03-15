@@ -26,38 +26,34 @@ class ProfileManagement (MusicManagement):
         
         while True:
             if ProfileManagement.id_avaiability(self, user_id, users) == True:
-                if ProfileManagement.email_avaiability(self, user_email) == True:
-                    if ProfileManagement.validate_email(self, user_email) == True:
-                        if ProfileManagement.username_avaiability(self, user_name) == True:
-                            user_type = input (""" 
-        Tipo de cuenta:
-        1. Musico
-        2. Escucha
-                                            
-        ---> """)
-                            if user_type == "1":
-                                newArtist = Artist(user_id, user_name, user_email, user_username, user_type)
-                                users.append(newArtist)
-                                print ("\nEl usuario se ha registrado correctamente. Puede acceder a la plataforma.\n")
-                                break
+                if ProfileManagement.email_avaiability(self, user_email) and ProfileManagement.validate_email(self, user_email) == True:
+                    if ProfileManagement.username_avaiability(self, user_name) == True:
+                        user_type = input (""" 
+    Tipo de cuenta:
+    1. Musico
+    2. Escucha
+                                        
+    ---> """)
+                        if user_type == "1":
+                            newArtist = Artist(user_id, user_name, user_email, user_username, user_type)
+                            users.append(newArtist)
+                            print ("\nEl usuario se ha registrado correctamente. Puede acceder a la plataforma.\n")
+                            break
 
-                            elif user_type == "2":
-                                newUser = Listener(user_id, user_name, user_email, user_username, user_type)
-                                users.append(newUser)
-                                print ("\nEl usuario se ha registrado correctamente. Puede acceder a la plataforma.\n")
-                                break
-                                
-                            else:
-                                print ("\nEl tipo de cuenta introducido es inválido. Solo puede ser de tipo musico o escucha\n")
-                                break
+                        elif user_type == "2":
+                            newUser = Listener(user_id, user_name, user_email, user_username, user_type)
+                            users.append(newUser)
+                            print ("\nEl usuario se ha registrado correctamente. Puede acceder a la plataforma.\n")
+                            break
+                            
                         else:
-                            print ("\nEl nombre de usuario que usted ha introducido ya se encuentra registrado.\n")
+                            print ("\nEl tipo de cuenta introducido es inválido. Solo puede ser de tipo musico o escucha\n")
                             break
                     else:
-                        print ("\nEl correo electrónico que usted ha introducido ya se encuentra registrado\n")
+                        print ("\nEl nombre de usuario que usted ha introducido ya se encuentra registrado. Por favor introduzca otro.\n")
                         break
                 else:
-                    print ("El correo electrónico que usted ha introducido es inválido.")
+                    print ("\nEl correo electrónico que usted ha introducido ya se encuentra registrado. Por favor introduzca otro.\n")
                     break
             else:
                 user_id = ProfileManagement.generate_id(self, users)
@@ -125,9 +121,8 @@ class ProfileManagement (MusicManagement):
                 break
 #-------------------------------------------------------------------------------------------------------------------------------------------------
                     
-    def search_profile (self):
+    def search_profile (self, active_user_id):
             matched_user = []
-            #TODO: Validar que acepte mayusculas y minusculas por igual
             user_username = input ("Nombre de usuario del perfil: ")
 
             registered_users = len(self.users)
@@ -140,47 +135,13 @@ class ProfileManagement (MusicManagement):
                         continue
             else:
                 print ("No hay usuarios registrados bajo ese nombre")
+
             
             for m in matched_user:
                 for j in range(1, len(matched_user)+1):
-                    if matched_user.index(m) == j-1:
-                        print (F"{j}. {m.username}")
-                    else:
-                        continue
-            
-            while True:
-                try:  
-                    user_associated_number = int (input ("Introduzca el número asociado al usuario de interés: "))   
-                    if type(user_associated_number) == int:
-                        if registered_users >= 0:
-                            for i in matched_user:
-                                registered_users -= 1
-                                if matched_user.index(i)+1 == user_associated_number:
-                                    if type(i) == Artist:
-                                        print (f"""   {i.username}    """)
-                                        Artist.read_attribute(i)
-                                        break
-                                    elif type (i) == Listener:
-                                        print (f"""   {i.username}    """)
-                                        Listener.read_attribute(i)
-                                        break
-                                    else:
-                                        print ("No hay usuarios de ese tipo")
-                                    break
-                                else:
-                                    continue
-                        else:
-                            print ("Lista vacía")
-                            break
-                    else:
-                        print ("lol, el error esta en wanna play song")
-                        break
-                    
-                    break
-                    
-                except ValueError:
-                    print ("\nDebe introducir un número válido (entero)\n")
-                
+                    print (F"{j}. {m.name}")
+
+            return (matched_user, active_user_id)
     
 #-------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -222,11 +183,12 @@ class ProfileManagement (MusicManagement):
             else:
                 continue
 
-        for a in registered_artist_list:
-            if a.id == artist_id:
+        for i in registered_artist_list:
+            if i.id == artist_id:
                 album_artist = artist_id
                 album_published = datetime.date.today()
                 album_id = ProfileManagement.generate_id(self, albums_list)
+
                 album_name = input ("Nombre del álbum: ")
                 album_description = input ("Descripción del álbum: ")
                 album_cover = input ("Link de la portada del álbum: ")
@@ -236,13 +198,12 @@ class ProfileManagement (MusicManagement):
                 #TODO: Realizar validaciones necesarias
                 
                 songs_list = self.songs
-    
-                while True:
-                    added_songs_quantity = int(input("Número de canciones del album: "))
+                added_songs_number = int(input("Número de canciones del album: "))
 
-                    if type(added_songs_quantity) == int:
-                        for j in range(1, added_songs_quantity):
-                            print (f"\n{j+1}. Track")
+                while True:
+                    if type(added_songs_number) == int:
+                        for i in range(0, added_songs_number):
+                            print (f"\n{i+1}. Track")
                             song_artist_id = artist_id
                             song_id = ProfileManagement.generate_id(self, songs_list)
                             song_name = input ("Nombre de la canción: ")
@@ -252,19 +213,21 @@ class ProfileManagement (MusicManagement):
                             newSong = Song(song_id, song_name, song_duration, song_link, song_artist_id)
                             album_tracklist.append(newSong)
                             self.songs.append(newSong)
-                            
+
                         newAlbum = Album(album_id, album_name, album_description, album_cover, album_published, album_genre, album_artist, album_tracklist)
                         self.albums.append(newAlbum)
 
-                        for ar in registered_artist_list:
-                            if ar.id == artist_id:
-                                ar.albums.append(newAlbum)
+
+                        for i in registered_artist_list:
+                            if i.id == artist_id:
+                                i.albums.append(newAlbum)
                             else:
                                 continue
+
                         break
                             
                     elif ValueError:
-                        print ("\nIntroduzca un número entero.\n")
+                        print ("Introduzca un número entero.")
                     else:
                         print ("Lol no se que paso")
                         break
@@ -288,35 +251,26 @@ class ProfileManagement (MusicManagement):
         playlist_creator = active_user_id
         playlist_tracks =[]
         
-        songs_list = self.songs
-
-        while True:
-            selected_song = ""
-            song_to_add_quantity = int(input("Cantidad de canciones que desea añadir: "))
         
-            try:
-                if song_to_add_quantity > 0:
-                    for k in range (1, song_to_add_quantity):
-                        song_to_add_name = input("Nombre de la canción: ")
-                        if ProfileManagement.check_name_registered(self, song_to_add_name, songs_list) == False:
-                            print ("No hay canciones registradas bajo ese nombre")
-                        
-                        else:
-                            matched_songs = ProfileManagement.check_name_registered(self, song_to_add_name, songs_list)
-                            for i in matched_songs:
-                                print (f"{matched_songs.index(i)+1}. {i.name}")
-                            
-                            selected_song = ProfileManagement.select_song(self, matched_songs)
-                            
-                            if type(selected_song) == Song:
-                                playlist_tracks.append(selected_song)
-                            else:
-                                print ('LOOOOL algo falló en la parte seleccionar canciones')
-                else:
-                    print ("\nIntroduzca un número válido (Debe ser entero)\n")
-            except ValueError:
-                print ("\nIntroduzca un número válido (Debe ser entero)\n")
+        #Como podría añadir los elementos a la playlist??
+        # if len(playlist_tracks) == 0:
+        #     choose = input ("Des")
 
-#-------------------------------------------------------------------------------------------------------------------------------------------------
+        #     song_name = input ("\nIntroduzca el nombre de la canción a agregar a la playlist: ")
+        #     song_self_list = self.songs
 
-    
+        #     if MusicManagement.check_name_registered(self, song_name, song_self_list) == False:
+        #         print ("No hay canciones registradas bajo ese nombre")
+        #     else:
+        #         matched_songs = MusicManagement.check_name_registered(self, song_name, song_self_list) 
+
+        #     for i in matched_songs:
+        #         print (f"{matched_songs.index(i)+1}. {i.name}")
+
+        #     song_to_add = MusicManagement.select_song(self, matched_songs)
+
+        #     if song_to_add == object:
+        #         playlist_tracks.append(song_to_add)
+
+        
+

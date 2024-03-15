@@ -36,10 +36,6 @@ class MusicManagement (Functions):
                 break
 
             elif itemToSearch == "5":
-                #TODO: Función para buscar perfil de un escucha
-                break
-
-            elif itemToSearch == "5":
                 print("Regresando...")
                 os.system('cls')
                 break
@@ -61,6 +57,7 @@ class MusicManagement (Functions):
         
             MusicManagement.wanna_play_song(self, matched_songs, active_user)
 
+
 #-------------------------------------------------------------------------------------------------------------------------------------------------
 
     def search_albums(self, active_user_id):
@@ -74,12 +71,12 @@ class MusicManagement (Functions):
             for i in matched_albums:
                 print (f"{matched_albums.index(i)+1}. {i.name}")
         
-            MusicManagement.read_to_play_tracklist(self, matched_albums, active_user_id)
+            MusicManagement.get_tracklist(self, matched_albums, active_user_id)
 
 
 #-------------------------------------------------------------------------------------------------------------------------------------------------
             
-    def read_to_play_tracklist(self, item_list, active_user_id):
+    def get_tracklist(self, item_list, active_user_id):
         item_index = int(input("Introduzca el número del álbum que desea reproducir: "))
 
         if item_index == int:
@@ -115,10 +112,10 @@ class MusicManagement (Functions):
             else:
                 continue
 
-        registered_artists_len = len(registered_artists_list)
-        if registered_artists_list >= 0:
+        registered_artists = len(registered_artists_list)
+        if registered_artists >= 0:
             for i in registered_artists_list:
-                registered_artists_len -= 1
+                registered_artists -= 1
                 if artist_username in i.username:
                     matched_artists.append(i)
                 else:
@@ -160,7 +157,7 @@ class MusicManagement (Functions):
                                 for a in artist.albums:
                                     print (f"{artist.albums.index(a)+1}. {a.name}")
                                 
-                                MusicManagement.read_to_play_tracklist(self, artist.albums, active_user_id)
+                                MusicManagement.get_tracklist(self, artist.albums, active_user_id)
                             else:
                                 print ("Este músico no tiene lanzamientos")
 
@@ -180,10 +177,10 @@ class MusicManagement (Functions):
     def select_artist_from_list (self, artist_list):
         artist_number = int(input ("\nIntroduzca el número correspondiente al artista deseado: "))
 
-        registered_artists_len = len(artist_list)
-        if registered_artists_len > 0:
+        registered_artists = len(artist_list)
+        if registered_artists > 0:
             for i in artist_list:
-                registered_artists_len -= 1
+                registered_artists -= 1
                 if artist_list.index(i)+1 == artist_number:
                     artist = i
                     return artist
@@ -192,6 +189,8 @@ class MusicManagement (Functions):
         else:
             return False
     
+        
+       
 
 #-------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -225,7 +224,7 @@ class MusicManagement (Functions):
         else:
             print ("No hay playlists registradas bajo esas credenciales")
 
-        MusicManagement.read_to_play_tracklist(self, matching_playlists, active_user_id)
+        MusicManagement.get_tracklist(self, matching_playlists, active_user_id)
 
 #-------------------------------------------------------------------------------------------------------------------------------------------------
     
@@ -294,3 +293,29 @@ class MusicManagement (Functions):
             
             return object
     
+#-------------------------------------------------------------------------------------------------------------------------------------------------
+            
+    def check_name_registered(self, item_name: str, item_self_list: list):
+        """Función para obtener todos los objetos registrados bajo un nombre. Si se encuentra registrado bajo ese nombre, se agregará a una lista con los
+        objetos coincidentes. En caso contrario, se retornará un booleano indicando que no existen objetos bajo ese nombre.
+
+        Args:
+            item_name (str): Nombre del objeto
+            item_self_list (list): Lista donde se encuentra el objeto
+
+        Returns:
+            matched_items (list): lista con los objetos coincidentes or Bool: False
+        """        
+        list_items = len(item_self_list)
+        matched_items = []
+        if list_items >= 0:
+            for i in item_self_list:
+                list_items -= 1
+                if item_name in i.name:
+                    matched_items.append(i)
+                else:
+                    continue
+            
+            return matched_items
+        else:
+            return False
