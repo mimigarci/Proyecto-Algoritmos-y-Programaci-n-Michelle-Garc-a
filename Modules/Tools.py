@@ -274,8 +274,17 @@ class Tools:
                                             |___/ 
               """)
         
-    
+#-------------------------------------------------------------------------------------------------------------------------------------------------
+            
     def validate_alphabetic (self, newName):
+        """Función para validar si un nombre de usuario tiene carácteres alfabéticos.
+
+        Args:
+            newName (str): Nombre de usuario a validar.
+
+        Returns:
+            Bool: Retorna True si es alfabético. Retorna False si contiene caracteres que no son alfabéticos.
+        """        
 
         count = 0
 
