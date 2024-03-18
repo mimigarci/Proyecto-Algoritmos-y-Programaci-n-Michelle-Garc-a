@@ -1,12 +1,12 @@
-from Song import Song
-from User import User
-
+from rich import print
 
 """ Clase Playlist: Playlists de Metrotify. """
  
 class Playlist:
+    """Playlist de Metrotify.
+    """    
 
-    def __init__(self, id: str, name: str, description: str, creator: str, tracks: list):
+    def __init__(self, id: str, name: str, description: str, creator: str, tracklist: list):
         """Constructor de la clase Playlist:
 
         Args:
@@ -21,31 +21,21 @@ class Playlist:
         self.name = name
         self.description = description
         self.creator = creator
-        self.tracks = tracks
-        self.liked = []
+        self.tracklist = tracklist
 
          
     def read(self):
         """Función para leer los datos de la playlist
 
         Returns:
-            string: Información de la playlist
+            str: Información de la playlist
         """        
-
-        for i in self.tracks:
-            tracks = print (Song.read(i))
-
-        likes = len(self.liked)
-        # for j in self.liked:
-        #     users = print(User.read(i))
-
-        return f""" -------- Información de la Playlist {self.name} --------
-
-id: {self.id}
-name: {self.name}
+        print(f"""\n[bold white]-------- {self.name} --------
+              
+[italic white]
 description: {self.description}
-creator: {self.creator}
-tracklist: {tracks}
-likes playlist: {likes}
-"""
+
+""")
+        for i in self.tracklist:
+            print (f"{self.tracklist.index(i)+1}. {i.name}")
         

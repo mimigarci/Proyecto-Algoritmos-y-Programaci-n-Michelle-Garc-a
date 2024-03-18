@@ -1,91 +1,82 @@
-from ProfileManagement import ProfileManagement
-from MusicManagement import MusicManagement
-from InteractionManagement import InteractionManagement
-from Indicators import Indicators
-from Artist import Artist
-from Listener import Listener
-from Album import Album
-from Playlist import Playlist
-from Song import Song 
+from Modules.ProfileManagement import ProfileManagement
+from Modules.Tools import Tools
+from Clases.Artist import Artist
+from Clases.Listener import Listener
+from Clases.Album import Album
+from Clases.Playlist import Playlist
+from Clases.Song import Song 
 from rich import print
 import requests
 import json
 import os
 import pickle
+import sys
 
  
-class Program(ProfileManagement, MusicManagement, InteractionManagement, Indicators):
-    """_Es la encargada de abrir y gestionar todas las operaciones que se tienen que llevar a cabo para gestionar la aplicación_
+class Program(ProfileManagement, Tools):
+    """Es la encargada de abrir y gestionar todas las operaciones que se tienen que llevar a cabo para gestionar la aplicación.
+    Hereda de las clases del Módulo de Gestión de Perfiles y de Tools.
 
     Args:
-        ProfileManagement (class): Módulo de Gestión de Perfiles
-        MusicManagement (class): Módulo de Gestión Musical
-        InteractionManagement (class): Módulo de Gestión de Interacciones
-        Indicators (class): Indicadores
-    """   
+        ProfileManagement (class): Clase con las funciones pertinentse al módulo de Gestión de Perfiles.
+        Tools (class): Clase donde se encuentran funciones auxiliares al programa.
+    """    
 
     def __init__(self):
-        """Constructor de la clase Programa:
-
-            self.songs: Lista con todas las canciones registradas en Metrotify.
-            self.users: Lista de todos los usuarios registrados en Metrotify.
-            self.albums: Lista con todas los álbums registrados dentro de Metrotify.
-            self.playlists: Lista con todas las listas de reproducción dentro de Metrotify.
-        """   
+        """Constructor de la clase Programa. Contiene todas las listas donde se almacena la información.
+        """        
         self.songs = []
         self.users =  []
         self.albums = []
         self.playlists = []
+        self.liked = []
 
 
 #-------------------------------------------------------------------------------------------------------------------------------------------------            
                     
     def download_API (self):
-
-        """Usuarios de Metrotify"""
+        """Función para descargar la información de la API y guardarlas dentro de un archivo txt. Por cada link existe un archivo diferente.
+        """        
+        
+        #Try and except para verificar la conexión a internet.
         try:
+            #Descarga de usuarios de la API
             url_users = "https://raw.githubusercontent.com/Algoritmos-y-Programacion/api-proyecto/main/users.json"
             request_users = requests.get(url_users)
 
-            with open ("users.text", "w") as users_data:
+            with open ("Api/users.text", "w") as users_data:
                 users_data.write(request_users.text)
             
 
-            """Albumes de Metrotify"""
-
+            #Descarga de albumes de la API
             url_albums = "https://raw.githubusercontent.com/Algoritmos-y-Programacion/api-proyecto/main/albums.json"
             request_albums = requests.get(url_albums)
 
-            with open ("albums.text", "w") as albums_data:
+            with open ("Api/albums.text", "w") as albums_data:
                 albums_data.write(request_albums.text)
 
 
-            """Playlists de Metrotify"""
+            #Descarga de playlists de la API
             url_playlist = "https://raw.githubusercontent.com/Algoritmos-y-Programacion/api-proyecto/main/playlists.json"
             request_playlists = requests.get(url_playlist)
 
-            with open ("playlist.text", "w") as playlists_data:
+            with open ("Api/playlist.text", "w") as playlists_data:
                 playlists_data.write(request_playlists.text)
 
-            print ("----- Base de datos descargada correctamente ----")
+            print ("[italic magenta]----- Base de datos descargada correctamente ----")
 
         except:
-            print("No tiene conexion.")
+            print("[italic magenta] No se pudo descargar la API. Compruebe su conexión a internet.")
 
     
 # -------------------------------------------------------------------------------------------------------------------------------
 
     def open_API (self): 
-        """Función para leer toda la información dentro de las bases de datos
-
-        Args:
-            users (list): Lista de los usuarios registrados dentro de la base de datos.
-            albums (list): Lista de los álbums registrados dentro de la base de datos.
-            playlists (list): Lista de las playlists registradas dentro de la base de datos.
-
+        """Función para crear objetos a partir de la API.
         """ 
 
-        with open('users.text','r') as users_file:
+        #Crear usuarios a partir de la información de la API.
+        with open('Api/users.text','r') as users_file:
             users = json.load(users_file)
             for i in users: 
                 user_id = i["id"]
@@ -101,15 +92,14 @@ class Program(ProfileManagement, MusicManagement, InteractionManagement, Indicat
 
                 elif i["type"] == "listener":
                     user_type = "listener"
-
                     newUser = Listener(user_id, user_name, user_email, user_username, user_type)
                     self.users.append(newUser)
                 
                 else:
-                    print ("Tipo de cuenta no registrado.")
+                    print ("[italic yellow]...Tipo de cuenta no registrado")
 
-     
-        with open('albums.text','r') as albums_file:
+        #Crear albumes a partir de la información de la API.
+        with open('Api/albums.text','r') as albums_file:
             albums = json.load(albums_file)
             for i in albums:
                 album_id = i["id"]
@@ -119,8 +109,8 @@ class Program(ProfileManagement, MusicManagement, InteractionManagement, Indicat
                 album_published = i["published"]
                 album_genre = i["genre"]
                 album_artist = i["artist"]
-
                 album_tracklist = i["tracklist"]
+
                 tracklist = []
                 for j in album_tracklist:
                     song_id = j["id"]
@@ -128,15 +118,28 @@ class Program(ProfileManagement, MusicManagement, InteractionManagement, Indicat
                     song_duration = j["duration"]
                     song_link = j["link"]
 
+                    #Crear canciones a partir de los álbumes de la API.
                     newSong = Song(song_id, song_name, song_duration, song_link, album_artist)
                     tracklist.append(newSong)
                     self.songs.append(newSong)
-                    
+
+                    for u in self.users:
+                        if u.id == album_artist:
+                            u.songs.append(newSong)
+                    else:
+                        continue 
+
                 newAlbum = Album(album_id, album_name, album_description, album_cover, album_published, album_genre, album_artist, tracklist)
                 self.albums.append(newAlbum)
+            
+                for u in self.users:
+                    if u.id == album_artist:
+                        u.albums.append(newAlbum)
+                    else:
+                        continue 
 
-
-        with open('playlist.text','r') as playlists_file:
+        #Crear playlists a partir de la información de la API.
+        with open('Api/playlist.text','r') as playlists_file:
             playlists = json.load(playlists_file)
             for i in playlists:
 
@@ -157,36 +160,50 @@ class Program(ProfileManagement, MusicManagement, InteractionManagement, Indicat
                 newPlaylist = Playlist(playlist_id, playlist_name, playlist_description, playlist_creator, tracks)
                 self.playlists.append(newPlaylist)
 
+                for u in self.users:
+                    if u.id == playlist_creator:
+                        u.playlists.append(newPlaylist)
+                    else:
+                        continue 
+
 #-------------------------------------------------------------------------------------------------------------------------------------------------
 
-    def write_in_data_txt(self):  
+    def write_data(self):  
+        """Función para guardar la información del programa.
+        """    
+
         data_to_save = [self.users, self.songs, self.albums, self.playlists]
+        file_pickle = 'Db/Data.pickle'
 
-        file_name = 'Data.pickle'
-
-        with open(file_name, 'wb') as k:
+        with open(file_pickle, 'wb') as k:
             pickle.dump(data_to_save, k)
-        print ("=== Guardado finalizado ===")
+
+        print ("[italic green]=== Guardado finalizado ===")
 
 #-------------------------------------------------------------------------------------------------------------------------------------------------
         
-    def get_info_from_data_txt (self):
-        file_name = 'Data.pickle'
+    def get_info_from_data (self):
+        """Función para obtener la información actual del programa.
+        """        
+        file_name = 'Db/Data.pickle'
+        try:
+            with open(file_name, "rb") as m:
+                
+                info_from_data_txt = pickle.load(m)
+                
+                self.users= info_from_data_txt[0] 
+                self.songs= info_from_data_txt[1] 
+                self.albums= info_from_data_txt[2] 
+                self.playlists= info_from_data_txt[3]
 
-        with open(file_name, "rb") as m:
-            info_from_data_txt = pickle.load(m)
-            
-            self.users= info_from_data_txt[0] 
-            self.songs= info_from_data_txt[1] 
-            self.albums= info_from_data_txt[2] 
-            self.playlists= info_from_data_txt[3]
-
-            print(f'\n Lectura finalizada')            
+                print(f'\n [italic magenta]Datos cargados correctamente')   
+        except:
+            print ('[italic red] ERROR ---- No hay información para guardar')         
 
 #------------------------------------------------------------------------------------------------------------------------------------------------- 
 
     def manage_music(self):
-        """Funcion para manejar el Módulo de Gestión Musical
+        """Funcion para llamar al módulo de gestión musical. Permite el inicio de sesión de los usuarios según su tipo de usuario.
         """        
         while True:
             option = input ("""
@@ -208,12 +225,13 @@ class Program(ProfileManagement, MusicManagement, InteractionManagement, Indicat
                 Program.menu(self)
                 break
             else:
-                print ("Opción inválida")
+                print ("[italic red]Opción inválida")
 
 #-------------------------------------------------------------------------------------------------------------------------------------------------
 
-    #TODO:  Hacer gráficos (matplotlib o bokeh)
     def indicators (self):
+        """Menu para ver los indicadores del programa. Muestra los top 5 de cada objeto junto a sus gráficos.
+        """        
         registered_songs = self.songs
         registered_albums = self.albums
         registered_artists = []
@@ -224,14 +242,14 @@ class Program(ProfileManagement, MusicManagement, InteractionManagement, Indicat
         if registered_users >= 0:
             for i in self.users:
                 registered_users -= 1
-                if Program.user_type(self, i) == Artist:
+                if type(i) == Artist:
                     registered_artists.append(i)
-                elif Program.user_type(self, i) == Listener:
+                elif type(i) == Listener:
                     registered_listeners.append(i)
                 else:
                     continue
         else:
-            print ("No hay usuarios registrados")
+            print ("[italic yellow] --- No hay usuarios registrados ---")
 
 
         while True:
@@ -243,120 +261,123 @@ class Program(ProfileManagement, MusicManagement, InteractionManagement, Indicat
     2. Top 5 álbumes más escuchados
     3. Top 5 músicos más escuchados
     4. Top 5 escuchas que más han utilizado la plataforma
-    5. Ver gráficas
-    6. Regresar
+    5. Regresar
                                                         
     ---> """)
             
 
             if option =="1":
-                top_5_songs = Program.set_top_5(self, registered_songs)
-                Program.read_top_5(self, top_5_songs)
-                break
+                top_5_songs = Program.set_top(self, registered_songs, 5)
+                Program.read_top(self, top_5_songs)
+                Program.top_bar_plots(self, top_5_songs)
 
             elif option =="2":
-                top_5_albums =Program.read_top_5(self, registered_albums)
-                Program.read_top_5(self, top_5_albums)
-                break
+                top_5_albums =Program.set_top(self, registered_albums, 5)
+                Program.read_top(self, top_5_albums)
+                Program.top_bar_plots(self, top_5_albums)
 
             elif option =="3":
-                top_5_artists = Program.read_top_5(self, registered_artists)
-                Program.read_top_5(self, top_5_artists)
-                break
+                top_5_artists = Program.set_top(self, registered_artists, 5)
+                Program.read_top(self, top_5_artists)
+                Program.top_bar_plots(self, top_5_artists)
 
             elif option =="4":
-                top_5_listeners = Program.read_top_5(self, registered_listeners)
-                Program.read_top_5(self, top_5_listeners)
-                break
+                top_5_listeners = Program.set_top(self, registered_listeners, 5)
+                Program.read_top(self, top_5_listeners)
+                Program.top_bar_plots(self, top_5_listeners)
 
             elif option =="5":
-                
-                pass
-
-            elif option =="6":
                 break
 
             else:
-                print ("Opción inválida")
+                print ("[italic red]...Opción inválida")
 
 #-------------------------------------------------------------------------------------------------------------------------------------------------
 
     def listener_menu(self):
+        """Menu de los escuhas de Metrotify. Se activa si el usuario activo es de tipo escucha. Muestra las opciones pertinentes a los
+        escuchas.
+        """        
         os.system('cls')
 
         active_listener = input ("Nombre de usuario del escucha activo (username): ")
         registered_listeners = []
+        listener_id = ""
 
         for i in self.users:
-            if Program.user_type(self, i) == Listener:
+            if type(i) == Listener:
                 registered_listeners.append(i)
             else:
                 continue
 
-        registered_listeners_len = len(registered_listeners)
         if Program.existent_username(self, active_listener) == True:
-            for i in self.users:
-                registered_listeners_len -= 1
+            for i in registered_listeners:
                 if i.username == active_listener:
                     listener_id = i.id
 
+                    print (f"\n[italic green]--- Hola, {i.name} ...has iniciado sesión ---\n")
                     while True:
-                        listener_option = input ("""Seleccione una acción
-                                        
-    1. Acceder al buscador
-    2. Crear una playlist
-    3. Cambiar la información personal de la cuenta
-    4. Eliminar cuenta
-    5. Regresar
+                        print ("\n[italic magenta]---------- Acciones ---------- ")
+                        listener_option = input ("""                            
+    1. Buscar una canción
+    2. Buscar un perfil
+    3. Crear una playlist
+    4. Cambiar la información personal de la cuenta
+    5. Eliminar cuenta
+    6. Regresar
                                         
         ---> """)
                         if listener_option == "1":
-                            Program.search_menu(self, listener_id)
+                            Program.song_search_menu(self, listener_id)
 
                         elif listener_option == "2":
-                            Program.create_playlist(self, listener_id)
+                            Program.search_profile(self)
 
                         elif listener_option == "3":
-                            Program.modify_user(self, listener_id)
+                            Program.create_playlist(self, listener_id)
 
                         elif listener_option == "4":
-                            Program.delete_account_data(self, listener_id)
+                            Program.modify_user(self, listener_id)
 
                         elif listener_option == "5":
+                            Program.delete_account_data(self, listener_id)
+
+                        elif listener_option == "6":
                             Program.menu(self)
                             break
 
                         else:
-                            print("\nOpción inválida. Introduzca una opción válida por favor.\n")
+                            print("\n[italic red]Opción inválida. Introduzca una opción válida por favor.\n")
                 else:
                     continue
         else:
-            print ("...El nombre de usuario no se encuentra registrado. Introduzca un nombre de usuario válido")
-    
+            print ("\n[italic red]...El nombre de usuario no se encuentra registrado. Introduzca un nombre de usuario válido")
 
 #-------------------------------------------------------------------------------------------------------------------------------------------------
             
     def artist_menu(self):
+        """Menu de los músicos de Metrotify. Se activa si el usuario activo es de tipo músico. Muestra las opciones pertinentes a los
+        músicos.
+        """        
         os.system('cls')
 
         active_artist = input ("Nombre de usuario del musico activo (username): ")
         registered_artists = []
 
         for i in self.users:
-            if Program.user_type(self, i) == Artist:
+            if type(i) == Artist:
                 registered_artists.append(i)
             else:
                 continue
 
-        registered_artists_len = len(registered_artists)
-        if registered_artists_len >= 0:
-            for i in self.users:
-                registered_artists -= 1
+        if Program.existent_username(self, active_artist) == True:
+            for i in registered_artists:
                 if i.username == active_artist:
                     artist_id = i.id
+                    print ("\n[italic green]--- Sesión iniciada correctamente ---\n")
                     while True:
-                        artist_option = input ("""Seleccione una acción
-                                
+                        print ("\n[italic magenta]---------- Acciones ---------- ")
+                        artist_option = input ("""                                                                 
     1. Lanzar un album
     2. Cambiar la información personal la cuenta
     3. Eliminar cuenta
@@ -377,28 +398,28 @@ class Program(ProfileManagement, MusicManagement, InteractionManagement, Indicat
                         elif artist_option == "4":
                             break
                         else:
-                            print("\nOpción inválida\n")
+                            print("\n[italic red]Opción inválida. Introduzca una opción válida por favor.\n")
                 else:
                     continue
-            else:
-                print ("...El nombre de usuario no se encuentra registrado. Introduzca un nombre de usuario válido")
         else:
-            print ("...El nombre de usuario no se encuentra registrado. Introduzca un nombre de usuario válido")
+            print ("\n[italic red]...El nombre de usuario no se encuentra registrado. Introduzca un nombre de usuario válido")
             
 #-------------------------------------------------------------------------------------------------------------------------------------------------   
 
     def menu(self):
-        while True:
-            choice = input("""
-Seleccione una acción a realizar:                
+        """Menu principal de Metrotify. Posee las acciones principales para gestionar el programa.
+        """   
 
+        while True:
+            Program.banner(self)
+            print ("\n[italic magenta]---------- Acciones ---------- ")
+            choice = input("""              
 0. Cargar API                          
 1. Cargar data de la aplicación                          
-2. Iniciar sesión                                                                                                                              
-3. Registrar un nuevo usuario                                                                                                                              
+2. Registrar un usuario nuevo                                                                                                                             
+3. Iniciar sesión                                                                                                                               
 4. Ver Indicadores                                              
-5. Salir y guardar                                         
-6. Salir y no guardar                                         
+5. Guardar y salir                                                                          
 
 ---> """)
             
@@ -408,33 +429,37 @@ Seleccione una acción a realizar:
                 os.system('cls')
 
             elif choice == "1":
-                Program.get_info_from_data_txt(self)
+                Program.get_info_from_data(self)
                 
             elif choice == "2":
-                Program.manage_music(self)
-            
-            elif choice == "3":
+                print ("\n[italic magenta] ...Accediendo a interfaz\n")
                 Program.register_profile(self)
+    
+            elif choice == "3":
+                print ("\n[italic magenta] ...Accediendo a interfaz\n")
+                Program.manage_music(self)
                 
             elif choice == "4":
+                print ("\n[italic magenta] ...Accediendo a interfaz\n")
                 Program.indicators(self)
 
             elif choice == "5":
-                Program.write_in_data_txt(self)
-                print ("\nCerrando programa...")
-                break
-
-            elif choice == "6":
-                print ("\nCerrando programa...")
-                break
-
+                Program.write_data(self)
+                print ("\n[italic magenta]Cerrando programa...")
+                sys.exit()
+ 
             else:
-                print ("\nOpción inválida\n")
+                print ("\n[italic red]Opción inválida\n")
+                os.system('cls')
 
 #-------------------------------------------------------------------------------------------------------------------------------------------------
+    
     def start_program(self):
-            print ("\nInicializando programa...")
-            print ("""
-                    Bienvenido a Metrotify!""")
-            Program.menu(self)
+        """Función para darle inicio al programa
+        """            
+        print ("\n[italic magenta]Inicializando programa...")
+        print ("""
+[bold white]🎵 Bienvenido a 🎵""")
+        Program.menu(self)
+
 

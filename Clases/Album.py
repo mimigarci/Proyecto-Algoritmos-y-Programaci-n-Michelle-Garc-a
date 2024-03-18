@@ -1,10 +1,12 @@
-from Song import Song
-from User import User
+from Clases.Song import Song
+from Clases.User import User
+from rich import print
  
-""" Clase Album: Álbumes de Metrotify. """
 
 class Album:
-
+    """Clase Album: Objetos de tipo album. Guardan canciones.
+    """
+    
     def __init__(self, id, name, description, cover, published, genre, artist, tracklist) -> None:
         
         self.id = id
@@ -15,10 +17,11 @@ class Album:
         self.genre = genre
         self.artist = artist
         self.tracklist = tracklist
-        self.liked = []
-    
-        """Constructor de la clase Album:
+        self.streams = 0
 
+        """
+        Constructor de la clase Album:
+            
             id: ID del álbum
             name: Nombre del álbum
             description: Descripción del álbum
@@ -27,14 +30,14 @@ class Album:
             genre: Género musical del álbum
             artist: Músico a quien pertenece el álbum
             tracklist: Canciones del álbum
-            self.liked: Lista de usuarios que le dieron me gusta al álbum.
-        """ 
+        """
+    
 
     def read(self):
         """Función para leer los datos del album
 
         Returns:
-            string: Información del album
+            str: Información del album
         """        
 
         for i in self.tracklist:
@@ -53,11 +56,7 @@ published: {self.published}
 genre: {self.genre}
 artist: {self.artist}
 tracklist: {tracklist}
-self.liked: {users}
 """
-    def read_tracklist (self):
-        for i in self.tracklist:
-            Song.read(i)
         
             
 
