@@ -1,8 +1,6 @@
 from rich import print
 from socket import gethostbyname, create_connection, error
 import webbrowser
-
-
  
 class Song:
     """Canciones de Metrotify.
@@ -75,6 +73,11 @@ Streams: {self.streams}
 
 
     def confirm_connection (self):
+        """Función para verificar si el usuario tiene conexión a internet.
+
+        Returns:
+            Bool: Retorna True si hay conexión a internet. Retorna False si no hay conexión a internet.
+        """        
         try:
             gethostbyname('google.com')
             connection = create_connection(('google.com', 80), 1)

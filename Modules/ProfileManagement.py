@@ -86,9 +86,9 @@ class ProfileManagement (MusicManagement):
         #Configuración del usuario
         while True:
             if ProfileManagement.existent_username(self, user.username) == True:
-                modify_attribute = input("""\n[bold magenta]----- Configuración de la cuenta ----- 
-
-    [italic blue]                                                                     
+                print ("\n[bold magenta]----- Configuración de la cuenta ----- \n")
+                modify_attribute = input("""
+                                                                   
     1. Cambiar nombre personal de la cuenta
     2. Actualizar email
     3. Cambiar nombre de usuario

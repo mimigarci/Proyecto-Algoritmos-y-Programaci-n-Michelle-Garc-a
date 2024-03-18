@@ -2,8 +2,6 @@ from Clases.User import User
 from Clases.Playlist import Playlist
 from rich import print
 
-""" Clase Listener: Escuchas de Metrotify. """
-   
 class Listener(User):
     """Escucha de Metrotify. Contiene la información clave de un escucha de Metrotify.
 

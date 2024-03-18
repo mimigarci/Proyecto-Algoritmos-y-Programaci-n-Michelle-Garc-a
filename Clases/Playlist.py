@@ -1,7 +1,6 @@
 from rich import print
 
-""" Clase Playlist: Playlists de Metrotify. """
- 
+
 class Playlist:
     """Playlist de Metrotify.
     """    
