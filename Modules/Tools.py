@@ -274,6 +274,21 @@ class Tools:
                                             |___/ 
               """)
         
+    
+    def validate_alphabetic (self, newName):
 
-        
+        count = 0
+
+        for i in newName:
+            if i.isalpha() or i == " ":
+                count += 1
+            else:
+                count = count
+   
+        if count == len(newName):
+            return True
+        else:
+            return False
+
+                
         

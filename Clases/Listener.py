@@ -47,7 +47,6 @@ class Listener(User):
             if choice == "1":   #Playlists
                 if len(self.playlists) > 0:
                     for i in self.playlists:
-                        print(f"\n{self.playlists.index(i)+1}")
                         Playlist.read(i)
 
                 else:

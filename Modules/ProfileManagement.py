@@ -6,7 +6,6 @@ from Clases.Listener import Listener
 from Clases.Song import Song
 from Clases.Album import Album
 from rich import print
-
 import datetime
 
 class ProfileManagement (MusicManagement):
@@ -86,9 +85,8 @@ class ProfileManagement (MusicManagement):
         #Configuración del usuario
         while True:
             if ProfileManagement.existent_username(self, user.username) == True:
-                print ("\n[bold magenta]----- Configuración de la cuenta ----- \n")
-                modify_attribute = input("""
-                                                                   
+                print ("\n[bold magenta]----- Configuración de la cuenta -----")
+                modify_attribute = input("""                                                
     1. Cambiar nombre personal de la cuenta
     2. Actualizar email
     3. Cambiar nombre de usuario
@@ -99,14 +97,11 @@ class ProfileManagement (MusicManagement):
                 if modify_attribute == "1":
                     newName = input ("Nombre nuevo: ")
                     if ProfileManagement.validate_lenght(self, newName) == True:
-                        if newName.isalpha:
-                            if newName.isnumeric:
-                                print ("\n[italic yellow]El nombre solo puede contener carácteres alfabéticos.\n")
-                            else:
-                                user.name = newName
-                                print ("\n[italic green]----- Cambio registrado -----\n")
+                        if ProfileManagement.validate_alphabetic(self, newName) == True:
+                            user.name = newName
+                            print ("\n[italic green]----- Cambio registrado -----\n")                                
                         else:
-                            print ("\n[italic yellow]El nombre solo puede contener carácteres alfabéticos.\n")
+                            print ("\n[italic red]El nombre solo puede contener carácteres alfabéticos.\n")
                     else:
                         print ("\n[italic yellow]Nombre inválido. Solo se aceptan nombres con un máximo de 30 caracteres.\n")
 
@@ -259,10 +254,10 @@ class ProfileManagement (MusicManagement):
 #-------------------------------------------------------------------------------------------------------------------------------------------------
 
     def launch_album (self, artist_id: str):
-        """_summary_
+        """Función para crear el álbum de un artista de Metrotify.
 
         Args:
-            artist_id (str): _description_
+            artist_id (str): ID del artista que creará el álbum.
         """     
         albums_list = self.albums
         registered_artist_list = []
