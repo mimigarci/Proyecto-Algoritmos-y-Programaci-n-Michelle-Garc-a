@@ -69,7 +69,7 @@ class ProfileManagement (MusicManagement):
             
 #-------------------------------------------------------------------------------------------------------------------------------------------------
 
-    def modify_user (self, user_id):
+    def modify_user (self, user_id: str):
         """Función para modificar la información personal de una cuenta
 
         Args:
@@ -188,7 +188,7 @@ class ProfileManagement (MusicManagement):
             
 #-------------------------------------------------------------------------------------------------------------------------------------------------
 
-    def delete_account_data (self, account_id):
+    def delete_account_data (self, account_id: str):
         """Función para eliminarla la información de una cuenta.
 
         Args:
@@ -329,7 +329,7 @@ class ProfileManagement (MusicManagement):
 
 #-------------------------------------------------------------------------------------------------------------------------------------------------
 
-    def create_playlist (self, active_user_id):
+    def create_playlist (self, active_user_id: str):
         """Función para crear un objeto de tipo playlist.
 
         Args:
@@ -390,6 +390,5 @@ class ProfileManagement (MusicManagement):
         except ValueError:
             print ("\n[italic red] Debe introducir un número válido entero\n")
 
-#-------------------------------------------------------------------------------------------------------------------------------------------------
 
     

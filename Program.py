@@ -1,5 +1,4 @@
 from Modules.ProfileManagement import ProfileManagement
-from Modules.Tools import Tools
 from Clases.Artist import Artist
 from Clases.Listener import Listener
 from Clases.Album import Album
@@ -13,17 +12,23 @@ import pickle
 import sys
 
  
-class Program(ProfileManagement, Tools):
+class Program(ProfileManagement):
     """Es la encargada de abrir y gestionar todas las operaciones que se tienen que llevar a cabo para gestionar la aplicación.
     Hereda de las clases del Módulo de Gestión de Perfiles y de Tools.
 
     Args:
         ProfileManagement (class): Clase con las funciones pertinentse al módulo de Gestión de Perfiles.
-        Tools (class): Clase donde se encuentran funciones auxiliares al programa.
     """    
 
     def __init__(self):
         """Constructor de la clase Programa. Contiene todas las listas donde se almacena la información.
+        
+        self.songs = Lista de objetos de tipo cancion.
+        self.users = Lista de objetos de tipo usuario.
+        self.albums = Lista de objetos de tipo album.
+        self.playlists = Lista de objetos de tipo playlist.
+        self.liked = Lista de likes registrados en la plataforma.
+        
         """        
         self.songs = []
         self.users =  []

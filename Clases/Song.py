@@ -38,7 +38,7 @@ Duración: {self.duration}
 Streams: {self.streams}
 """
 
-    def play_song(self, active_user_id, users_list, albums_list, song_list):
+    def play_song(self, active_user_id: str, users_list: list, albums_list: list, song_list: list):
         song_id = self.id
 
         for s in song_list:

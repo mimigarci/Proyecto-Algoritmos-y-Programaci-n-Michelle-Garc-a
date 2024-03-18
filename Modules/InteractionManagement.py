@@ -105,7 +105,7 @@ class InteractionManagement(Tools):
 
 #-------------------------------------------------------------------------------------------------------------------------------------------------
     
-    def remove_like (self, item, user_id):
+    def remove_like (self, item: object, user_id: str):
         """Función para quitar un like. Elimina el like de la lista de su objeto correspondiente y de la lista de likes registrados.
 
         Args:
@@ -150,7 +150,7 @@ class InteractionManagement(Tools):
 
 #-------------------------------------------------------------------------------------------------------------------------------------------------
     
-    def interactions_menu (self, item, active_user_id):
+    def interactions_menu (self, item: object, active_user_id: str):
         """Menu de interacciones. Ofrece las opciones de agregar o quitar un like de un objeto a partir de un usuario activo. 
 
         Args:
@@ -173,7 +173,7 @@ class InteractionManagement(Tools):
 
 #-------------------------------------------------------------------------------------------------------------------------------------------------
 
-    def already_gave_like(self, like):
+    def already_gave_like(self, like: tuple):
         """Función para verificar si un usuario le dió me gusta a un objeto.
 
         Args:

@@ -5,14 +5,12 @@ import matplotlib.pyplot as mpl
 import uuid
 import re
 import validators
-
-
 class Tools:
     """Clase con las funciones pertenecientes al módulo de gestión de perfiles
     """
 #-------------------------------------------------------------------------------------------------------------------------------------------------
    
-    def username_avaiability (self, username):
+    def username_avaiability (self, username: str):
         """Función para verificar si un nombre de usuario se encuentra disponible. Si este se encuentra disponible, retornará True.
         En caso contrario, retornará False.
 
@@ -30,7 +28,7 @@ class Tools:
 
 #-------------------------------------------------------------------------------------------------------------------------------------------------
             
-    def email_avaiability (self, email):
+    def email_avaiability (self, email:str):
         """Función para verificar si un email se encuentra disponible. Si este se encuentra disponible, retornará True.
         En caso contrario, retornará False.
 
@@ -48,7 +46,7 @@ class Tools:
 
 #-------------------------------------------------------------------------------------------------------------------------------------------------
     
-    def id_avaiability (self, id, self_list):
+    def id_avaiability (self, id: str, self_list: str):
         """Función para verificar si un id se encuentra disponible. Si este se encuentra disponible, retornará True.
         En caso contrario, retornará False.
 
@@ -66,7 +64,7 @@ class Tools:
             
 #-------------------------------------------------------------------------------------------------------------------------------------------------
              
-    def validate_email(self, email):
+    def validate_email(self, email: str):
         """Función para verificar si un email introducido es válido. Si este se encuentra disponible, retornará True.
         En caso contrario, retornará False.
 
@@ -86,7 +84,7 @@ class Tools:
   
 #-------------------------------------------------------------------------------------------------------------------------------------------------
             
-    def existent_username (self, username):
+    def existent_username (self, username: str):
         """Función para verificar si un nombre de usuario se encuentra registrado. Si este se encuentra registrado, retornará True.
         En caso contrario, retornará False.
 
@@ -109,7 +107,7 @@ class Tools:
 
 #-------------------------------------------------------------------------------------------------------------------------------------------------
         
-    def generate_id(self, self_list):
+    def generate_id(self, self_list: list):
         """Función para generar un ID no registrado en la plataforma.
         """        
         generated_id = uuid.uuid4
@@ -147,7 +145,7 @@ class Tools:
         
 #-------------------------------------------------------------------------------------------------------------------------------------------------
             
-    def validate_lenght(self, user_input):
+    def validate_lenght(self, user_input: str):
         """Función para validar la longitud de un string introducido por pantalla.
 
         Args:
@@ -164,7 +162,7 @@ class Tools:
             return None
 
 #-------------------------------------------------------------------------------------------------------------------------------------------------        
-    def set_top (self, list_to_check, amount):
+    def set_top (self, list_to_check: list, amount: int):
         """Función para definir el top 5 de una lista.
 
         Args:
@@ -206,7 +204,7 @@ class Tools:
             
 #-------------------------------------------------------------------------------------------------------------------------------------------------
     
-    def read_top (self, top_list):
+    def read_top (self, top_list: list):
         """Función para imprimir por pantalla la información dentro del top 5 con más streams de un objeto. 
 
         Args:
@@ -276,7 +274,7 @@ class Tools:
         
 #-------------------------------------------------------------------------------------------------------------------------------------------------
             
-    def validate_alphabetic (self, newName):
+    def validate_alphabetic (self, newName: str):
         """Función para validar si un nombre de usuario tiene carácteres alfabéticos.
 
         Args:

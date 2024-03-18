@@ -11,7 +11,7 @@ class MusicManagement (InteractionManagement):
  
 #-------------------------------------------------------------------------------------------------------------------------------------------------
     
-    def song_search_menu (self, active_user_id):
+    def song_search_menu (self, active_user_id: str):
         """Buscador de canciones.
 
         Args:
@@ -52,7 +52,7 @@ class MusicManagement (InteractionManagement):
         
 #-------------------------------------------------------------------------------------------------------------------------------------------------
                 
-    def search_songs (self, active_user_id):
+    def search_songs (self, active_user_id: str):
         """Buscador de canciones por nombre.
 
         Args:
@@ -80,7 +80,7 @@ class MusicManagement (InteractionManagement):
 
 #-------------------------------------------------------------------------------------------------------------------------------------------------
 
-    def search_albums(self, active_user_id):
+    def search_albums(self, active_user_id: str):
         """Buscador de canciones por album.
 
         Args:
@@ -104,7 +104,7 @@ class MusicManagement (InteractionManagement):
 
 #-------------------------------------------------------------------------------------------------------------------------------------------------
 
-    def album_and_playlist_menu(self, item_list, active_user_id):
+    def album_and_playlist_menu(self, item_list: list, active_user_id: str):
         """Función para acceder al menu de un álbum o una playlist
         
         Args:
@@ -164,7 +164,7 @@ class MusicManagement (InteractionManagement):
 
 #-------------------------------------------------------------------------------------------------------------------------------------------------
             
-    def search_by_artist (self, active_user_id):
+    def search_by_artist (self, active_user_id: str):
         """Buscador de canciones por artista.
 
         Args:
@@ -254,7 +254,7 @@ class MusicManagement (InteractionManagement):
 
 #-------------------------------------------------------------------------------------------------------------------------------------------------
 
-    def select_user_from_list (self, user_list):
+    def select_user_from_list (self, user_list: list):
         """Función para seleccionar un usuario de una lista donde se encuentre registrado.
 
         Args:
@@ -280,7 +280,7 @@ class MusicManagement (InteractionManagement):
 
 #-------------------------------------------------------------------------------------------------------------------------------------------------
 
-    def search_playlists (self, active_user_id):
+    def search_playlists (self, active_user_id: str):
         """Buscador de canciones por playlist.
 
         Args:
@@ -313,7 +313,7 @@ class MusicManagement (InteractionManagement):
 
 #-------------------------------------------------------------------------------------------------------------------------------------------------
     
-    def song_menu(self, active_user_id, chosen_song):
+    def song_menu(self, active_user_id: str, chosen_song: object):
         """Menu de una canción. Permite reproducirla, ver sus datos o gestionar sus me gusta. 
 
         Args:
@@ -353,7 +353,7 @@ class MusicManagement (InteractionManagement):
 
 #-------------------------------------------------------------------------------------------------------------------------------------------------
     
-    def select_item(self, matched_items_list):
+    def select_item(self, matched_items_list: list):
         """Función para seleccionar un elemento dentro de un menu a través de un número asociado.
 
         Args:
