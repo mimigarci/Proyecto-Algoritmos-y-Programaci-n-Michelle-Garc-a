@@ -118,7 +118,7 @@ class MusicManagement (InteractionManagement):
         try: 
             item_index = int(item_index)
             if type(item_index) == int:
-                if item_index in range(0, len(item_list)) or item_index == len(item_index):
+                if item_index in range(0, len(item_list)) or item_index == len(item_list):
                     while True:
                         for i in item_list:
                             if item_list.index(i)+1 == item_index:
